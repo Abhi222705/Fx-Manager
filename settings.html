@@ -1,0 +1,1908 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<script src="./auth.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Settings | FX Manager</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* ================================
+           SETTINGS PAGE
+        ================================= */
+
+        .settings-page {
+            padding: 30px;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .settings-header {
+            margin-bottom: 30px;
+        }
+
+        .settings-header h1 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        .settings-header p {
+            margin-top: 8px;
+            opacity: 0.6;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+
+        .settings-card {
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .settings-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .settings-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .settings-icon {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(25, 217, 155, 0.12);
+            font-size: 20px;
+        }
+
+        .settings-card-header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .settings-card-header p {
+            margin: 4px 0 0;
+            font-size: 12px;
+            opacity: 0.55;
+        }
+
+        .settings-form-group {
+            margin-bottom: 18px;
+        }
+
+        .settings-form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .settings-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .settings-input,
+        .settings-select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.18);
+            color: inherit;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .settings-input:focus,
+        .settings-select:focus {
+            border-color: #19d99b;
+        }
+
+        .settings-select option {
+            background: #111;
+            color: white;
+        }
+
+        .avatar-preview {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .large-avatar {
+            width: 58px;
+            height: 58px;
+            min-width: 58px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #19d99b;
+            color: #07110d;
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .avatar-preview-text strong {
+            display: block;
+            font-size: 14px;
+        }
+
+        .avatar-preview-text span {
+            display: block;
+            font-size: 12px;
+            opacity: 0.55;
+            margin-top: 4px;
+        }
+
+        .settings-button {
+            margin-top: 20px;
+            border: none;
+            border-radius: 10px;
+            padding: 11px 17px;
+            background: #19d99b;
+            color: #07110d;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .settings-button:hover {
+            transform: translateY(-1px);
+            opacity: 0.9;
+        }
+
+        .settings-button.secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: inherit;
+        }
+
+        .settings-button.danger {
+            background: rgba(255, 70, 70, 0.12);
+            color: #ff6969;
+            border: 1px solid rgba(255, 70, 70, 0.2);
+        }
+
+        .settings-button.danger:hover {
+            background: rgba(255, 70, 70, 0.2);
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .data-info {
+            padding: 14px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            margin-bottom: 18px;
+            font-size: 13px;
+            line-height: 1.6;
+            opacity: 0.7;
+        }
+
+        .about-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .about-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .about-row:last-child {
+            border-bottom: none;
+        }
+
+        .about-label {
+            opacity: 0.55;
+            font-size: 13px;
+        }
+
+        .about-value {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .save-status {
+            margin-top: 12px;
+            font-size: 12px;
+            color: #19d99b;
+            min-height: 16px;
+        }
+
+        .account-preview {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(25, 217, 155, 0.07);
+            border: 1px solid rgba(25, 217, 155, 0.1);
+        }
+
+        .account-preview span {
+            display: block;
+            font-size: 11px;
+            opacity: 0.55;
+            margin-bottom: 5px;
+        }
+
+        .account-preview strong {
+            font-size: 22px;
+        }
+
+        @media (max-width: 800px) {
+            .settings-page {
+                padding: 20px;
+            }
+
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-card.full-width {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================================
+         SIDEBAR
+    ================================= -->
+
+    <aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+        </div>
+
+        <div>
+
+            <h2>FX Manager</h2>
+
+            <span>Trading Journal</span>
+
+        </div>
+
+    </div>
+
+
+    <nav class="sidebar-nav">
+
+        <a href="./index.html" class="nav-item">
+            <span>📊</span>
+            Dashboard
+        </a>
+
+        <a href="./calendar.html" class="nav-item">
+            <span>📅</span>
+            Calendar
+        </a>
+
+        <a href="./history.html" class="nav-item">
+            <span>📝</span>
+            History
+        </a>
+
+        <a href="./trades.html" class="nav-item">
+            <span>💹</span>
+            Trades
+        </a>
+
+        <a href="./analytics.html" class="nav-item">
+            <span>📈</span>
+            Analytics
+        </a>
+
+        <a href="./goals.html" class="nav-item">
+            <span>🎯</span>
+            Goals
+        </a>
+
+    </nav>
+
+
+    <!-- PROFILE / SETTINGS -->
+
+    <div class="sidebar-bottom">
+
+        <a href="./settings.html" class="profile-mini">
+
+            <div class="profile-avatar" id="sidebarAvatar">
+                A
+            </div>
+
+            <div class="profile-mini-info">
+
+                <span
+                    class="profile-mini-name"
+                    id="sidebarProfileName">
+                    Trader
+                </span>
+
+                <span class="profile-mini-role">
+                    Trading Profile
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <a href="./settings.html" class="settings-link">
+
+            <span>⚙️</span>
+
+            Settings
+
+        </a>
+
+        <a href="#" class="settings-link" onclick="FXAuth.logout(); return false;">
+
+            <span>🚪</span>
+
+            Logout
+
+        </a>
+
+    </div>
+
+
+    <!-- SIDEBAR FOOTER -->
+
+    <div class="sidebar-footer">
+
+        <div class="status-dot">
+        </div>
+
+        <span>
+            Local Storage Active
+        </span>
+
+    </div>
+
+</aside>
+
+
+    <!-- ================================
+         MAIN CONTENT
+    ================================= -->
+
+    <main class="main-content">
+
+        <div class="settings-page">
+
+            <div class="settings-header">
+
+                <h1>⚙️ Settings</h1>
+
+                <p>
+                    Manage your profile, trading preferences,
+                    account settings and FX Manager data.
+                </p>
+
+            </div>
+
+
+            <div class="settings-grid">
+
+
+                <!-- ================================
+                     PROFILE
+                ================================= -->
+
+                <section class="settings-card">
+
+                    <div class="settings-card-header">
+
+                        <div class="settings-icon">
+                            👤
+                        </div>
+
+                        <div>
+                            <h2>Profile</h2>
+                            <p>
+                                Customize your trading profile
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="settings-form-group">
+
+                        <label for="profileName">
+                            Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profileName"
+                            class="settings-input"
+                            placeholder="Enter your name">
+
+                    </div>
+
+
+                    <div class="settings-form-group">
+
+                        <label for="profileRole">
+                            Profile Role
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profileRole"
+                            class="settings-input"
+                            placeholder="Example: Forex Trader">
+
+                    </div>
+
+
+                    <div class="settings-form-group">
+
+                        <label for="profileAvatar">
+                            Avatar Letter
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profileAvatar"
+                            class="settings-input"
+                            maxlength="2"
+                            placeholder="A">
+
+                    </div>
+
+
+                    <div class="avatar-preview">
+
+                        <div
+                            class="large-avatar"
+                            id="avatarPreview">
+                            A
+                        </div>
+
+                        <div class="avatar-preview-text">
+
+                            <strong id="profilePreviewName">
+                                Trader
+                            </strong>
+
+                            <span id="profilePreviewRole">
+                                Trading Profile
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="settings-button"
+                        onclick="saveProfile()">
+
+                        Save Profile
+
+                    </button>
+
+
+                    <div
+                        class="save-status"
+                        id="profileStatus">
+                    </div>
+
+                </section>
+
+
+                <!-- ================================
+                     APPEARANCE
+                ================================= -->
+
+                <section class="settings-card">
+
+                    <div class="settings-card-header">
+
+                        <div class="settings-icon">
+                            🎨
+                        </div>
+
+                        <div>
+                            <h2>Appearance</h2>
+                            <p>
+                                Customize the application appearance
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="settings-form-group">
+
+                        <label for="themeSelect">
+                            Theme
+                        </label>
+
+                        <select
+                            id="themeSelect"
+                            class="settings-select">
+
+                            <option value="dark">
+                                Dark
+                            </option>
+
+                            <option value="light">
+                                Light
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="data-info">
+
+                        🌙 <strong>Dark mode</strong> is recommended
+                        for comfortable trading sessions and reduced
+                        screen brightness.
+
+                    </div>
+
+
+                    <button
+                        class="settings-button"
+                        onclick="saveTheme()">
+
+                        Save Appearance
+
+                    </button>
+
+
+                    <div
+                        class="save-status"
+                        id="themeStatus">
+                    </div>
+
+                </section>
+
+
+                <!-- ================================
+                     TRADING PREFERENCES
+                ================================= -->
+
+                <section class="settings-card">
+
+                    <div class="settings-card-header">
+
+                        <div class="settings-icon">
+                            💱
+                        </div>
+
+                        <div>
+                            <h2>Trading Preferences</h2>
+                            <p>
+                                Set your default trading options
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="settings-form-group">
+
+                        <label for="defaultMarket">
+                            Default Market
+                        </label>
+
+                        <select
+                            id="defaultMarket"
+                            class="settings-select">
+
+                            <option value="XAUUSD">
+                                XAUUSD — Gold
+                            </option>
+
+                            <option value="EURUSD">
+                                EURUSD
+                            </option>
+
+                            <option value="GBPUSD">
+                                GBPUSD
+                            </option>
+
+                            <option value="USDJPY">
+                                USDJPY
+                            </option>
+
+                            <option value="USDCHF">
+                                USDCHF
+                            </option>
+
+                            <option value="AUDUSD">
+                                AUDUSD
+                            </option>
+
+                            <option value="USDCAD">
+                                USDCAD
+                            </option>
+
+                            <option value="BTCUSD">
+                                BTCUSD
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="settings-form-group">
+
+                        <label for="defaultSession">
+                            Default Session
+                        </label>
+
+                        <select
+                            id="defaultSession"
+                            class="settings-select">
+
+                            <option value="New York">
+                                New York
+                            </option>
+
+                            <option value="London">
+                                London
+                            </option>
+
+                            <option value="Asian">
+                                Asian
+                            </option>
+
+                            <option value="London/New York">
+                                London / New York
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <button
+                        class="settings-button"
+                        onclick="saveTradingPreferences()">
+
+                        Save Preferences
+
+                    </button>
+
+
+                    <div
+                        class="save-status"
+                        id="preferencesStatus">
+                    </div>
+
+                </section>
+
+
+                <!-- ================================
+                     ACCOUNT
+                ================================= -->
+
+                <section class="settings-card">
+
+                    <div class="settings-card-header">
+
+                        <div class="settings-icon">
+                            💰
+                        </div>
+
+                        <div>
+                            <h2>Account</h2>
+                            <p>
+                                Configure your trading account
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="settings-form-group">
+
+                        <label for="startingBalance">
+                            Starting Balance
+                        </label>
+
+                        <input
+                            type="number"
+                            id="startingBalance"
+                            class="settings-input"
+                            placeholder="10000"
+                            min="0"
+                            step="0.01">
+
+                    </div>
+
+
+                    <div class="account-preview">
+
+                        <span>
+                            Starting Account Balance
+                        </span>
+
+                        <strong id="balancePreview">
+                            $0.00
+                        </strong>
+
+                    </div>
+
+
+                    <button
+                        class="settings-button"
+                        onclick="saveAccountSettings()">
+
+                        Save Account
+
+                    </button>
+
+
+                    <div
+                        class="save-status"
+                        id="accountStatus">
+                    </div>
+
+                </section>
+
+
+                <!-- ================================
+                     DATA MANAGEMENT
+                ================================= -->
+
+                <section class="settings-card full-width">
+
+                    <div class="settings-card-header">
+
+                        <div class="settings-icon">
+                            💾
+                        </div>
+
+                        <div>
+                            <h2>Data Management</h2>
+                            <p>
+                                Backup and manage your FX Manager data
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="data-info">
+
+                        Your trades, journals, goals and settings are
+                        stored locally in your browser using
+                        <strong>Local Storage</strong>.
+
+                        <br><br>
+
+                        Export your data regularly so you have a backup.
+
+                    </div>
+
+
+                    <div class="button-row">
+
+                        <button
+                            class="settings-button"
+                            onclick="exportData()">
+
+                            📤 Export Data
+
+                        </button>
+
+
+                        <button
+                            class="settings-button secondary"
+                            onclick="document.getElementById('importFile').click()">
+
+                            📥 Import Data
+
+                        </button>
+
+                        <input
+                            type="file"
+                            id="importFile"
+                            accept=".json"
+                            style="display:none"
+                            onchange="importData(event)">
+
+
+                        <button
+                            class="settings-button danger"
+                            onclick="clearFXManagerData()">
+
+                            🗑️ Clear FX Manager Data
+
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="save-status"
+                        id="dataStatus">
+                    </div>
+
+                </section>
+
+
+                <!-- ================================
+                     ABOUT
+                ================================= -->
+
+                <section class="settings-card full-width">
+
+                    <div class="settings-card-header">
+
+                        <div class="settings-icon">
+                            ℹ️
+                        </div>
+
+                        <div>
+                            <h2>About</h2>
+                            <p>
+                                Application information
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="about-list">
+
+                        <div class="about-row">
+
+                            <span class="about-label">
+                                Application
+                            </span>
+
+                            <span class="about-value">
+                                FX Manager
+                            </span>
+
+                        </div>
+
+
+                        <div class="about-row">
+
+                            <span class="about-label">
+                                Version
+                            </span>
+
+                            <span class="about-value">
+                                1.0
+                            </span>
+
+                        </div>
+
+
+                        <div class="about-row">
+
+                            <span class="about-label">
+                                Purpose
+                            </span>
+
+                            <span class="about-value">
+                                Trading Journal & Analytics
+                            </span>
+
+                        </div>
+
+
+                        <div class="about-row">
+
+                            <span class="about-label">
+                                Data Storage
+                            </span>
+
+                            <span class="about-value">
+                                Local Storage
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- ================================
+         JAVASCRIPT
+    ================================= -->
+
+    <script>
+
+        /* =================================
+           PROFILE
+        ================================= */
+
+        function loadProfile() {
+
+            const profile =
+                JSON.parse(
+                    localStorage.getItem("fxProfile")
+                ) || {};
+
+            const name =
+                profile.name || "Trader";
+
+            const role =
+                profile.role || "Trading Profile";
+
+            const avatar =
+                profile.avatar ||
+                name.charAt(0).toUpperCase() ||
+                "A";
+
+
+            document.getElementById("profileName").value =
+                profile.name || "";
+
+            document.getElementById("profileRole").value =
+                profile.role || "";
+
+            document.getElementById("profileAvatar").value =
+                avatar;
+
+
+            updateProfilePreview();
+
+        }
+
+
+        function updateProfilePreview() {
+
+            const name =
+                document.getElementById("profileName").value.trim()
+                || "Trader";
+
+            const role =
+                document.getElementById("profileRole").value.trim()
+                || "Trading Profile";
+
+            const avatarInput =
+                document.getElementById("profileAvatar").value.trim();
+
+            const avatar =
+                avatarInput ||
+                name.charAt(0).toUpperCase() ||
+                "A";
+
+
+            document.getElementById("avatarPreview").textContent =
+                avatar.substring(0, 2).toUpperCase();
+
+            document.getElementById("profilePreviewName").textContent =
+                name;
+
+            document.getElementById("profilePreviewRole").textContent =
+                role;
+
+        }
+
+
+        function saveProfile() {
+
+            const name =
+                document.getElementById("profileName").value.trim();
+
+            const role =
+                document.getElementById("profileRole").value.trim();
+
+            let avatar =
+                document.getElementById("profileAvatar").value.trim();
+
+
+            if (!name) {
+
+                alert("Please enter your name.");
+
+                return;
+
+            }
+
+
+            if (!avatar) {
+
+                avatar =
+                    name.charAt(0).toUpperCase();
+
+            }
+
+
+            avatar =
+                avatar.substring(0, 2).toUpperCase();
+
+
+            const profile = {
+
+                name: name,
+
+                role:
+                    role || "Trading Profile",
+
+                avatar: avatar
+
+            };
+
+
+            localStorage.setItem(
+                "fxProfile",
+                JSON.stringify(profile)
+            );
+
+
+            updateProfilePreview();
+
+            updateSidebarProfile();
+
+
+            showStatus(
+                "profileStatus",
+                "Profile saved successfully! ✅"
+            );
+
+        }
+
+
+        /* =================================
+           SIDEBAR PROFILE
+        ================================= */
+
+        function updateSidebarProfile() {
+
+            const profile =
+                JSON.parse(
+                    localStorage.getItem("fxProfile")
+                ) || {};
+
+
+            const name =
+                profile.name || "Trader";
+
+            const avatar =
+                profile.avatar ||
+                name.charAt(0).toUpperCase();
+
+
+            document.getElementById(
+                "sidebarProfileName"
+            ).textContent = name;
+
+
+            document.getElementById(
+                "sidebarAvatar"
+            ).textContent =
+                avatar.substring(0, 2).toUpperCase();
+
+        }
+
+
+        /* =================================
+           TRADING PREFERENCES
+        ================================= */
+
+        function loadTradingPreferences() {
+
+            const preferences =
+                JSON.parse(
+                    localStorage.getItem(
+                        "fxTradingPreferences"
+                    )
+                ) || {};
+
+
+            document.getElementById(
+                "defaultMarket"
+            ).value =
+                preferences.market || "XAUUSD";
+
+
+            document.getElementById(
+                "defaultSession"
+            ).value =
+                preferences.session || "New York";
+
+        }
+
+
+        function saveTradingPreferences() {
+
+            const market =
+                document.getElementById(
+                    "defaultMarket"
+                ).value;
+
+            const session =
+                document.getElementById(
+                    "defaultSession"
+                ).value;
+
+
+            const preferences = {
+
+                market: market,
+
+                session: session
+
+            };
+
+
+            localStorage.setItem(
+                "fxTradingPreferences",
+                JSON.stringify(preferences)
+            );
+
+
+            showStatus(
+                "preferencesStatus",
+                "Trading preferences saved! ✅"
+            );
+
+        }
+
+
+        /* =================================
+           ACCOUNT
+        ================================= */
+
+        function loadAccountSettings() {
+
+            const balance =
+                parseFloat(
+                    localStorage.getItem(
+                        "fxStartingBalance"
+                    )
+                ) || 0;
+
+
+            document.getElementById(
+                "startingBalance"
+            ).value =
+                balance || "";
+
+
+            updateBalancePreview();
+
+        }
+
+
+        function updateBalancePreview() {
+
+            const value =
+                parseFloat(
+                    document.getElementById(
+                        "startingBalance"
+                    ).value
+                ) || 0;
+
+
+            document.getElementById(
+                "balancePreview"
+            ).textContent =
+                "$" +
+                value.toLocaleString(
+                    "en-US",
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
+                );
+
+        }
+
+
+        function saveAccountSettings() {
+
+            const balance =
+                parseFloat(
+                    document.getElementById(
+                        "startingBalance"
+                    ).value
+                );
+
+
+            if (isNaN(balance) || balance < 0) {
+
+                alert(
+                    "Please enter a valid starting balance."
+                );
+
+                return;
+
+            }
+
+
+            localStorage.setItem(
+                "fxStartingBalance",
+                balance.toString()
+            );
+
+
+            updateBalancePreview();
+
+
+            showStatus(
+                "accountStatus",
+                "Account settings saved! ✅"
+            );
+
+        }
+
+
+        /* =================================
+           THEME
+        ================================= */
+
+        function loadTheme() {
+
+            const theme =
+                localStorage.getItem(
+                    "fxTheme"
+                ) || "dark";
+
+
+            document.getElementById(
+                "themeSelect"
+            ).value = theme;
+
+        }
+
+
+        function saveTheme() {
+
+            const theme =
+                document.getElementById(
+                    "themeSelect"
+                ).value;
+
+
+            localStorage.setItem(
+                "fxTheme",
+                theme
+            );
+
+
+            applyTheme(theme);
+
+
+            showStatus(
+                "themeStatus",
+                "Appearance saved! ✅"
+            );
+
+        }
+
+
+        function applyTheme(theme) {
+
+            if (theme === "light") {
+
+                document.body.classList.add(
+                    "light-theme"
+                );
+
+            } else {
+
+                document.body.classList.remove(
+                    "light-theme"
+                );
+
+            }
+
+        }
+
+
+        /* =================================
+           EXPORT DATA
+        ================================= */
+
+        function exportData() {
+
+            const data = {
+
+                version: "1.0",
+
+                exportedAt:
+                    new Date().toISOString(),
+
+                fxTrades:
+                    JSON.parse(
+                        localStorage.getItem(
+                            "fxTrades"
+                        )
+                    ) || [],
+
+                fxGoals:
+                    JSON.parse(
+                        localStorage.getItem(
+                            "fxGoals"
+                        )
+                    ) || [],
+
+                fxGoalSettings:
+                    JSON.parse(
+                        localStorage.getItem(
+                            "fxGoalSettings"
+                        )
+                    ) || {},
+
+                fxProfile:
+                    JSON.parse(
+                        localStorage.getItem(
+                            "fxProfile"
+                        )
+                    ) || {},
+
+                fxTradingPreferences:
+                    JSON.parse(
+                        localStorage.getItem(
+                            "fxTradingPreferences"
+                        )
+                    ) || {},
+
+                fxStartingBalance:
+                    localStorage.getItem(
+                        "fxStartingBalance"
+                    ) || "0",
+
+                fxTheme:
+                    localStorage.getItem(
+                        "fxTheme"
+                    ) || "dark",
+
+                journals: {}
+
+            };
+
+
+            /* Collect all journal entries */
+
+            for (
+                let i = 0;
+                i < localStorage.length;
+                i++
+            ) {
+
+                const key =
+                    localStorage.key(i);
+
+
+                if (
+                    key &&
+                    key.startsWith("journal_")
+                ) {
+
+                    data.journals[key] =
+                        JSON.parse(
+                            localStorage.getItem(key)
+                        );
+
+                }
+
+            }
+
+
+            const json =
+                JSON.stringify(
+                    data,
+                    null,
+                    2
+                );
+
+
+            const blob =
+                new Blob(
+                    [json],
+                    {
+                        type:
+                            "application/json"
+                    }
+                );
+
+
+            const url =
+                URL.createObjectURL(blob);
+
+
+            const link =
+                document.createElement("a");
+
+
+            link.href = url;
+
+            link.download =
+                "FX-Manager-Backup-" +
+                new Date()
+                    .toISOString()
+                    .slice(0, 10) +
+                ".json";
+
+
+            document.body.appendChild(link);
+
+            link.click();
+
+            document.body.removeChild(link);
+
+
+            URL.revokeObjectURL(url);
+
+
+            showStatus(
+                "dataStatus",
+                "Data exported successfully! 📤"
+            );
+
+        }
+
+
+        /* =================================
+           IMPORT DATA
+        ================================= */
+
+        function importData(event) {
+
+            const file =
+                event.target.files[0];
+
+
+            if (!file) {
+                return;
+            }
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload = function(e) {
+
+                try {
+
+                    const data =
+                        JSON.parse(
+                            e.target.result
+                        );
+
+
+                    if (
+                        !data ||
+                        typeof data !== "object"
+                    ) {
+
+                        throw new Error(
+                            "Invalid backup file."
+                        );
+
+                    }
+
+
+                    /* Trades */
+
+                    if (
+                        Array.isArray(
+                            data.fxTrades
+                        )
+                    ) {
+
+                        localStorage.setItem(
+                            "fxTrades",
+                            JSON.stringify(
+                                data.fxTrades
+                            )
+                        );
+
+                    }
+
+
+                    /* Goals */
+
+                    if (
+                        Array.isArray(
+                            data.fxGoals
+                        )
+                    ) {
+
+                        localStorage.setItem(
+                            "fxGoals",
+                            JSON.stringify(
+                                data.fxGoals
+                            )
+                        );
+
+                    }
+
+
+                    /* Goal Settings */
+
+                    if (
+                        data.fxGoalSettings &&
+                        typeof data.fxGoalSettings === "object"
+                    ) {
+
+                        localStorage.setItem(
+                            "fxGoalSettings",
+                            JSON.stringify(
+                                data.fxGoalSettings
+                            )
+                        );
+
+                    }
+
+
+                    /* Profile */
+
+                    if (
+                        data.fxProfile &&
+                        typeof data.fxProfile === "object"
+                    ) {
+
+                        localStorage.setItem(
+                            "fxProfile",
+                            JSON.stringify(
+                                data.fxProfile
+                            )
+                        );
+
+                    }
+
+
+                    /* Trading Preferences */
+
+                    if (
+                        data.fxTradingPreferences &&
+                        typeof data.fxTradingPreferences === "object"
+                    ) {
+
+                        localStorage.setItem(
+                            "fxTradingPreferences",
+                            JSON.stringify(
+                                data.fxTradingPreferences
+                            )
+                        );
+
+                    }
+
+
+                    /* Starting Balance */
+
+                    if (
+                        data.fxStartingBalance !== undefined
+                    ) {
+
+                        localStorage.setItem(
+                            "fxStartingBalance",
+                            String(
+                                data.fxStartingBalance
+                            )
+                        );
+
+                    }
+
+
+                    /* Theme */
+
+                    if (
+                        data.fxTheme
+                    ) {
+
+                        localStorage.setItem(
+                            "fxTheme",
+                            data.fxTheme
+                        );
+
+                    }
+
+
+                    /* Journals */
+
+                    if (
+                        data.journals &&
+                        typeof data.journals === "object"
+                    ) {
+
+                        Object.keys(
+                            data.journals
+                        ).forEach(function(key) {
+
+                            if (
+                                key.startsWith(
+                                    "journal_"
+                                )
+                            ) {
+
+                                localStorage.setItem(
+                                    key,
+                                    JSON.stringify(
+                                        data.journals[key]
+                                    )
+                                );
+
+                            }
+
+                        });
+
+                    }
+
+
+                    alert(
+                        "Data imported successfully! The page will now reload."
+                    );
+
+
+                    location.reload();
+
+                }
+
+                catch (error) {
+
+                    alert(
+                        "Import failed. Please select a valid FX Manager backup file."
+                    );
+
+                }
+
+            };
+
+
+            reader.readAsText(file);
+
+
+            /* Reset file input */
+
+            event.target.value = "";
+
+        }
+
+
+        /* =================================
+           CLEAR FX MANAGER DATA
+        ================================= */
+
+        function clearFXManagerData() {
+
+            const confirmed =
+                confirm(
+                    "Are you sure you want to delete your FX Manager data?\n\n" +
+                    "This will remove trades, journals, goals, profile, preferences and account settings.\n\n" +
+                    "This action cannot be undone unless you have an exported backup."
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            const doubleConfirm =
+                confirm(
+                    "Final confirmation:\n\n" +
+                    "Delete all FX Manager data?"
+                );
+
+
+            if (!doubleConfirm) {
+                return;
+            }
+
+
+            /* Remove known FX Manager data */
+
+            localStorage.removeItem(
+                "fxTrades"
+            );
+
+            localStorage.removeItem(
+                "fxGoals"
+            );
+
+            localStorage.removeItem(
+                "fxGoalSettings"
+            );
+
+            localStorage.removeItem(
+                "fxProfile"
+            );
+
+            localStorage.removeItem(
+                "fxTradingPreferences"
+            );
+
+            localStorage.removeItem(
+                "fxStartingBalance"
+            );
+
+            localStorage.removeItem(
+                "fxTheme"
+            );
+
+
+            /* Remove journals only */
+
+            const journalKeys = [];
+
+            for (
+                let i = 0;
+                i < localStorage.length;
+                i++
+            ) {
+
+                const key =
+                    localStorage.key(i);
+
+
+                if (
+                    key &&
+                    key.startsWith("journal_")
+                ) {
+
+                    journalKeys.push(key);
+
+                }
+
+            }
+
+
+            journalKeys.forEach(function(key) {
+
+                localStorage.removeItem(key);
+
+            });
+
+
+            alert(
+                "FX Manager data has been cleared."
+            );
+
+
+            location.reload();
+
+        }
+
+
+        /* =================================
+           STATUS MESSAGE
+        ================================= */
+
+        function showStatus(
+            elementId,
+            message
+        ) {
+
+            const element =
+                document.getElementById(
+                    elementId
+                );
+
+
+            element.textContent =
+                message;
+
+
+            setTimeout(function() {
+
+                element.textContent = "";
+
+            }, 3000);
+
+        }
+
+
+        /* =================================
+           LIVE PREVIEWS
+        ================================= */
+
+        document
+            .getElementById("profileName")
+            .addEventListener(
+                "input",
+                updateProfilePreview
+            );
+
+
+        document
+            .getElementById("profileRole")
+            .addEventListener(
+                "input",
+                updateProfilePreview
+            );
+
+
+        document
+            .getElementById("profileAvatar")
+            .addEventListener(
+                "input",
+                updateProfilePreview
+            );
+
+
+        document
+            .getElementById("startingBalance")
+            .addEventListener(
+                "input",
+                updateBalancePreview
+            );
+
+
+        /* =================================
+           INITIALIZE
+        ================================= */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function() {
+
+                loadProfile();
+
+                loadTradingPreferences();
+
+                loadAccountSettings();
+
+                loadTheme();
+
+                updateSidebarProfile();
+
+                const theme =
+                    localStorage.getItem(
+                        "fxTheme"
+                    ) || "dark";
+
+                applyTheme(theme);
+
+            }
+        );
+
+    </script>
+
+
+<script src="./sidebar.js"></script>
+
+</body>
+
+</html>

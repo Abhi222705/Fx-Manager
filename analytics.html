@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<script src="./auth.js"></script>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>FX Manager | Analytics</title>
+
+<link rel="stylesheet"
+      href="./style.css">
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+        </div>
+
+        <div>
+
+            <h2>FX Manager</h2>
+
+            <span>Trading Journal</span>
+
+        </div>
+
+    </div>
+
+
+    <nav class="sidebar-nav">
+
+        <a href="./index.html" class="nav-item">
+            <span>📊</span>
+            Dashboard
+        </a>
+
+        <a href="./calendar.html" class="nav-item">
+            <span>📅</span>
+            Calendar
+        </a>
+
+        <a href="./history.html" class="nav-item">
+            <span>📝</span>
+            History
+        </a>
+
+        <a href="./trades.html" class="nav-item">
+            <span>💹</span>
+            Trades
+        </a>
+
+        <a href="./analytics.html" class="nav-item active">
+            <span>📈</span>
+            Analytics
+        </a>
+
+        <a href="./goals.html" class="nav-item">
+            <span>🎯</span>
+            Goals
+        </a>
+
+    </nav>
+
+
+    <!-- PROFILE / SETTINGS -->
+
+    <div class="sidebar-bottom">
+
+        <a href="./settings.html" class="profile-mini">
+
+            <div class="profile-avatar" id="sidebarAvatar">
+                A
+            </div>
+
+            <div class="profile-mini-info">
+
+                <span
+                    class="profile-mini-name"
+                    id="sidebarProfileName">
+                    Trader
+                </span>
+
+                <span class="profile-mini-role">
+                    Trading Profile
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <a href="./settings.html" class="settings-link">
+
+            <span>⚙️</span>
+
+            Settings
+
+        </a>
+
+        <a href="#" class="settings-link" onclick="FXAuth.logout(); return false;">
+
+            <span>🚪</span>
+
+            Logout
+
+        </a>
+
+    </div>
+
+
+    <!-- SIDEBAR FOOTER -->
+
+    <div class="sidebar-footer">
+
+        <div class="status-dot">
+        </div>
+
+        <span>
+            Local Storage Active
+        </span>
+
+    </div>
+
+</aside>
+
+
+
+<main class="main">
+
+
+<header class="topbar">
+
+    <button class="menu-btn"
+            onclick="toggleSidebar()">
+        ☰
+    </button>
+
+
+    <div>
+
+        <h2>Analytics</h2>
+
+        <p>
+            Understand your trading performance
+        </p>
+
+    </div>
+
+</header>
+
+
+
+<!-- ==============================
+     MAIN STATISTICS
+================================ -->
+
+<section class="stats-grid">
+
+
+    <div class="stat-card">
+
+        <p>Total Trades</p>
+
+        <h2 id="aTrades">
+            0
+        </h2>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <p>Winning Trades</p>
+
+        <h2 id="aWins"
+            class="positive">
+            0
+        </h2>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <p>Losing Trades</p>
+
+        <h2 id="aLosses"
+            class="negative">
+            0
+        </h2>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <p>Win Rate</p>
+
+        <h2 id="aWinRate">
+            0%
+        </h2>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==============================
+     SECONDARY STATISTICS
+================================ -->
+
+<section class="stats-grid">
+
+
+    <div class="stat-card">
+
+        <p>Breakeven</p>
+
+        <h2 id="aBreakeven">
+            0
+        </h2>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <p>Total P&L</p>
+
+        <h2 id="aPnL"
+            class="positive">
+            $0.00
+        </h2>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <p>Profit Factor</p>
+
+        <h2 id="profitFactor">
+            0
+        </h2>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <p>Average Trade</p>
+
+        <h2 id="averageTrade">
+            $0.00
+        </h2>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==============================
+     P&L + PERFORMANCE
+================================ -->
+
+<section class="dashboard-grid">
+
+
+    <div class="panel">
+
+        <h3>
+            Profit & Loss
+        </h3>
+
+
+        <div class="analytics-number"
+             id="pnlDisplay">
+
+            $0.00
+
+        </div>
+
+
+        <div class="bar-chart"
+             id="pnlChart">
+
+        </div>
+
+    </div>
+
+
+
+    <div class="panel">
+
+        <h3>
+            Performance Metrics
+        </h3>
+
+
+        <div class="metric">
+
+            <span>
+                Average Win
+            </span>
+
+            <strong
+                id="avgWin"
+                class="positive">
+
+                $0.00
+
+            </strong>
+
+        </div>
+
+
+
+        <div class="metric">
+
+            <span>
+                Average Loss
+            </span>
+
+            <strong
+                id="avgLoss"
+                class="negative">
+
+                $0.00
+
+            </strong>
+
+        </div>
+
+
+
+        <div class="metric">
+
+            <span>
+                Best Trade
+            </span>
+
+            <strong
+                id="bestTrade"
+                class="positive">
+
+                $0.00
+
+            </strong>
+
+        </div>
+
+
+
+        <div class="metric">
+
+            <span>
+                Worst Trade
+            </span>
+
+            <strong
+                id="worstTrade"
+                class="negative">
+
+                $0.00
+
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==============================
+     STRATEGY PERFORMANCE
+================================ -->
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <h3>
+                Performance by Strategy
+            </h3>
+
+            <p>
+                Compare your trading strategies
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div id="strategyStats">
+
+        <p>
+            No strategy data yet.
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==============================
+     SESSION PERFORMANCE
+================================ -->
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <h3>
+                Performance by Session
+            </h3>
+
+            <p>
+                Find your most profitable trading session
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div id="sessionStats">
+
+        <p>
+            No session data yet.
+        </p>
+
+    </div>
+
+</section>
+
+
+</main>
+
+</div>
+
+
+
+<script src="./app.js"></script>
+
+
+<script>
+
+/* ==========================================
+   ANALYTICS
+========================================== */
+
+function analytics() {
+
+
+    /*
+       Make sure trades exists.
+       This prevents errors if
+       localStorage has no trades.
+    */
+
+    if (!Array.isArray(trades)) {
+
+        return;
+
+    }
+
+
+    const total =
+        trades.length;
+
+
+
+    const wins =
+        trades.filter(
+            trade =>
+                String(trade.result)
+                    .toUpperCase() === "WIN"
+        );
+
+
+
+    const losses =
+        trades.filter(
+            trade =>
+                String(trade.result)
+                    .toUpperCase() === "LOSS"
+        );
+
+
+
+    const breakeven =
+        trades.filter(
+            trade =>
+                String(trade.result)
+                    .toUpperCase() === "BREAKEVEN"
+        );
+
+
+
+    /* ==============================
+       TOTAL P&L
+    ============================== */
+
+    const totalProfit =
+        trades.reduce(
+            (sum, trade) => {
+
+                return sum +
+                    Number(trade.pnl || 0);
+
+            },
+            0
+        );
+
+
+
+    /* ==============================
+       WIN RATE
+    ============================== */
+
+    const winRate =
+        total > 0
+            ? (wins.length / total) * 100
+            : 0;
+
+
+
+    /* ==============================
+       GROSS PROFIT
+    ============================== */
+
+    const grossProfit =
+        wins.reduce(
+            (sum, trade) => {
+
+                return sum +
+                    Math.max(
+                        0,
+                        Number(trade.pnl || 0)
+                    );
+
+            },
+            0
+        );
+
+
+
+    /* ==============================
+       GROSS LOSS
+    ============================== */
+
+    const grossLoss =
+        Math.abs(
+            losses.reduce(
+                (sum, trade) => {
+
+                    return sum +
+                        Math.min(
+                            0,
+                            Number(trade.pnl || 0)
+                        );
+
+                },
+                0
+            )
+        );
+
+
+
+    /* ==============================
+       PROFIT FACTOR
+    ============================== */
+
+    let profitFactor = "0.00";
+
+
+    if (grossLoss > 0) {
+
+        profitFactor =
+            (
+                grossProfit /
+                grossLoss
+            ).toFixed(2);
+
+    }
+    else if (grossProfit > 0) {
+
+        profitFactor = "∞";
+
+    }
+
+
+
+    /* ==============================
+       AVERAGE WIN
+    ============================== */
+
+    const averageWin =
+        wins.length > 0
+
+            ? wins.reduce(
+                (sum, trade) =>
+                    sum +
+                    Number(trade.pnl || 0),
+                0
+              ) / wins.length
+
+            : 0;
+
+
+
+    /* ==============================
+       AVERAGE LOSS
+    ============================== */
+
+    const averageLoss =
+        losses.length > 0
+
+            ? Math.abs(
+                losses.reduce(
+                    (sum, trade) =>
+                        sum +
+                        Number(trade.pnl || 0),
+                    0
+                ) / losses.length
+              )
+
+            : 0;
+
+
+
+    /* ==============================
+       AVERAGE TRADE
+    ============================== */
+
+    const averageTrade =
+        total > 0
+            ? totalProfit / total
+            : 0;
+
+
+
+    /* ==============================
+       BEST / WORST TRADE
+    ============================== */
+
+    const pnls =
+        trades.map(
+            trade =>
+                Number(trade.pnl || 0)
+        );
+
+
+
+    const bestTrade =
+        pnls.length > 0
+            ? Math.max(...pnls)
+            : 0;
+
+
+
+    const worstTrade =
+        pnls.length > 0
+            ? Math.min(...pnls)
+            : 0;
+
+
+
+    /* ==============================
+       UPDATE HTML
+    ============================== */
+
+    document.getElementById(
+        "aTrades"
+    ).textContent =
+        total;
+
+
+
+    document.getElementById(
+        "aWins"
+    ).textContent =
+        wins.length;
+
+
+
+    document.getElementById(
+        "aLosses"
+    ).textContent =
+        losses.length;
+
+
+
+    document.getElementById(
+        "aBreakeven"
+    ).textContent =
+        breakeven.length;
+
+
+
+    document.getElementById(
+        "aWinRate"
+    ).textContent =
+        winRate.toFixed(1) + "%";
+
+
+
+    document.getElementById(
+        "aPnL"
+    ).textContent =
+        formatMoney(totalProfit);
+
+
+
+    document.getElementById(
+        "pnlDisplay"
+    ).textContent =
+        formatMoney(totalProfit);
+
+
+
+    document.getElementById(
+        "averageTrade"
+    ).textContent =
+        formatMoney(averageTrade);
+
+
+
+    document.getElementById(
+        "avgWin"
+    ).textContent =
+        formatMoney(averageWin);
+
+
+
+    document.getElementById(
+        "avgLoss"
+    ).textContent =
+        formatMoney(-averageLoss);
+
+
+
+    document.getElementById(
+        "profitFactor"
+    ).textContent =
+        profitFactor;
+
+
+
+    document.getElementById(
+        "bestTrade"
+    ).textContent =
+        formatMoney(bestTrade);
+
+
+
+    document.getElementById(
+        "worstTrade"
+    ).textContent =
+        formatMoney(worstTrade);
+
+
+
+    renderStrategies();
+
+    renderSessions();
+
+    renderPnLChart();
+
+}
+
+
+
+/* ==========================================
+   MONEY FORMAT
+========================================== */
+
+function formatMoney(value) {
+
+    const number =
+        Number(value || 0);
+
+
+    if (number > 0) {
+
+        return "+$" +
+            number.toFixed(2);
+
+    }
+
+
+    if (number < 0) {
+
+        return "-$" +
+            Math.abs(number)
+                .toFixed(2);
+
+    }
+
+
+    return "$0.00";
+
+}
+
+
+
+/* ==========================================
+   STRATEGY ANALYTICS
+========================================== */
+
+function renderStrategies() {
+
+
+    const container =
+        document.getElementById(
+            "strategyStats"
+        );
+
+
+    const strategies = {};
+
+
+
+    trades.forEach(trade => {
+
+
+        const name =
+            trade.strategy ||
+            "Unknown";
+
+
+
+        if (!strategies[name]) {
+
+            strategies[name] = {
+
+                trades: 0,
+
+                wins: 0,
+
+                losses: 0,
+
+                pnl: 0
+
+            };
+
+        }
+
+
+
+        strategies[name].trades++;
+
+
+
+        strategies[name].pnl +=
+            Number(trade.pnl || 0);
+
+
+
+        if (
+            String(trade.result)
+                .toUpperCase() === "WIN"
+        ) {
+
+            strategies[name].wins++;
+
+        }
+
+
+
+        if (
+            String(trade.result)
+                .toUpperCase() === "LOSS"
+        ) {
+
+            strategies[name].losses++;
+
+        }
+
+    });
+
+
+
+    container.innerHTML = "";
+
+
+
+    const entries =
+        Object.entries(
+            strategies
+        );
+
+
+
+    if (entries.length === 0) {
+
+        container.innerHTML =
+            "<p>No strategy data yet.</p>";
+
+        return;
+
+    }
+
+
+
+    entries
+        .sort(
+            (a, b) =>
+                b[1].pnl -
+                a[1].pnl
+        )
+        .forEach(
+            ([name, data]) => {
+
+
+                const rate =
+                    data.trades > 0
+                        ? (
+                            data.wins /
+                            data.trades *
+                            100
+                          ).toFixed(1)
+                        : "0.0";
+
+
+
+                container.innerHTML += `
+
+                    <div class="strategy-row">
+
+                        <div>
+
+                            <strong>
+                                ${name}
+                            </strong>
+
+                            <small>
+
+                                ${data.trades}
+                                trades
+
+                                •
+                                ${data.wins}W
+
+                                /
+                                ${data.losses}L
+
+                                •
+                                ${rate}%
+                                win rate
+
+                            </small>
+
+                        </div>
+
+
+                        <strong class="${
+                            data.pnl >= 0
+                                ? "positive"
+                                : "negative"
+                        }">
+
+                            ${formatMoney(
+                                data.pnl
+                            )}
+
+                        </strong>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+}
+
+
+
+/* ==========================================
+   SESSION ANALYTICS
+========================================== */
+
+function renderSessions() {
+
+
+    const container =
+        document.getElementById(
+            "sessionStats"
+        );
+
+
+    const sessions = {};
+
+
+
+    trades.forEach(trade => {
+
+
+        const name =
+            trade.session ||
+            "Unknown";
+
+
+
+        if (!sessions[name]) {
+
+            sessions[name] = {
+
+                trades: 0,
+
+                wins: 0,
+
+                losses: 0,
+
+                pnl: 0
+
+            };
+
+        }
+
+
+
+        sessions[name].trades++;
+
+
+
+        sessions[name].pnl +=
+            Number(trade.pnl || 0);
+
+
+
+        if (
+            String(trade.result)
+                .toUpperCase() === "WIN"
+        ) {
+
+            sessions[name].wins++;
+
+        }
+
+
+
+        if (
+            String(trade.result)
+                .toUpperCase() === "LOSS"
+        ) {
+
+            sessions[name].losses++;
+
+        }
+
+    });
+
+
+
+    container.innerHTML = "";
+
+
+
+    const entries =
+        Object.entries(
+            sessions
+        );
+
+
+
+    if (entries.length === 0) {
+
+        container.innerHTML =
+            "<p>No session data yet.</p>";
+
+        return;
+
+    }
+
+
+
+    entries
+        .sort(
+            (a, b) =>
+                b[1].pnl -
+                a[1].pnl
+        )
+        .forEach(
+            ([name, data]) => {
+
+
+                const rate =
+                    data.trades > 0
+                        ? (
+                            data.wins /
+                            data.trades *
+                            100
+                          ).toFixed(1)
+                        : "0.0";
+
+
+
+                container.innerHTML += `
+
+                    <div class="strategy-row">
+
+                        <div>
+
+                            <strong>
+                                ${name}
+                            </strong>
+
+                            <small>
+
+                                ${data.trades}
+                                trades
+
+                                •
+                                ${data.wins}W
+
+                                /
+                                ${data.losses}L
+
+                                •
+                                ${rate}%
+                                win rate
+
+                            </small>
+
+                        </div>
+
+
+                        <strong class="${
+                            data.pnl >= 0
+                                ? "positive"
+                                : "negative"
+                        }">
+
+                            ${formatMoney(
+                                data.pnl
+                            )}
+
+                        </strong>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+}
+
+
+
+/* ==========================================
+   P&L CHART
+========================================== */
+
+function renderPnLChart() {
+
+
+    const chart =
+        document.getElementById(
+            "pnlChart"
+        );
+
+
+    chart.innerHTML = "";
+
+
+
+    if (trades.length === 0) {
+
+        chart.innerHTML =
+            "<p>No trade data yet.</p>";
+
+        return;
+
+    }
+
+
+
+    let runningPnL = 0;
+
+
+
+    trades
+        .slice()
+        .sort(
+            (a, b) =>
+                new Date(a.date) -
+                new Date(b.date)
+        )
+        .forEach(
+            (trade, index) => {
+
+
+                runningPnL +=
+                    Number(
+                        trade.pnl || 0
+                    );
+
+
+                const bar =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                bar.className =
+                    "pnl-bar";
+
+
+
+                const height =
+                    Math.max(
+                        10,
+                        Math.min(
+                            100,
+                            Math.abs(
+                                runningPnL
+                            ) /
+                            Math.max(
+                                1,
+                                Math.abs(
+                                    runningPnL
+                                )
+                            ) *
+                            100
+                        )
+                    );
+
+
+
+                bar.style.height =
+                    height + "%";
+
+
+
+                bar.title =
+                    `Trade ${index + 1}
+                    • ${trade.date}
+                    • P&L: ${formatMoney(
+                        trade.pnl
+                    )}
+                    • Running P&L:
+                    ${formatMoney(
+                        runningPnL
+                    )}`;
+
+
+
+                if (runningPnL < 0) {
+
+                    bar.classList.add(
+                        "loss-bar"
+                    );
+
+                }
+                else {
+
+                    bar.classList.add(
+                        "profit-bar"
+                    );
+
+                }
+
+
+
+                chart.appendChild(
+                    bar
+                );
+
+            }
+        );
+
+}
+
+
+
+/* ==========================================
+   START ANALYTICS
+========================================== */
+
+analytics();
+
+</script>
+
+
+<script src="./sidebar.js"></script>
+
+</body>
+
+</html>

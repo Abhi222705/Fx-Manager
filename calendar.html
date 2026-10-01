@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<script src="./auth.js"></script>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>FX Manager | Calendar</title>
+
+    <link rel="stylesheet"
+          href="./style.css">
+
+
+    <style>
+
+        /* =========================================
+           CALENDAR PAGE
+        ========================================= */
+
+        .calendar-panel {
+            margin-bottom: 20px;
+        }
+
+
+        /* =========================================
+           CALENDAR HEADER
+        ========================================= */
+
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .calendar-header h2 {
+            margin: 0;
+        }
+
+        .calendar-header button {
+            width: 42px;
+            height: 42px;
+            border: 1px solid #273348;
+            border-radius: 9px;
+            background: #161d29;
+            color: #ffffff;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .calendar-header button:hover {
+            background: #1d2737;
+            border-color: #18d89a;
+        }
+
+
+        /* =========================================
+           WEEK DAYS
+        ========================================= */
+
+        .calendar-week {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .calendar-week span {
+            text-align: center;
+            color: #8fa5c7;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 10px 0;
+        }
+
+
+        /* =========================================
+           CALENDAR GRID
+        ========================================= */
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+
+        /* =========================================
+           CALENDAR DAY
+        ========================================= */
+
+        .calendar-day {
+            min-height: 105px;
+            background: #161d29;
+            border: 1px solid #273348;
+            border-radius: 9px;
+            padding: 10px;
+            box-sizing: border-box;
+            cursor: pointer;
+            transition: 0.2s ease;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            border-color: #18d89a;
+            transform: translateY(-1px);
+        }
+
+        .calendar-day strong {
+            display: block;
+            color: #ffffff;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .empty-day {
+            background: transparent;
+            border: none;
+            cursor: default;
+        }
+
+        .empty-day:hover {
+            border: none;
+            transform: none;
+        }
+
+
+        /* =========================================
+           TODAY
+        ========================================= */
+
+        .today {
+            border-color: #18d89a !important;
+            box-shadow: inset 0 0 0 1px rgba(24, 216, 154, 0.15);
+        }
+
+
+        /* =========================================
+           DAILY P&L
+        ========================================= */
+
+        .day-profit {
+            color: #18d89a;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .day-loss {
+            color: #ff6b6b;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .day-breakeven {
+            color: #f4c95d;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+
+        /* =========================================
+           DAY TRADE COUNT
+        ========================================= */
+
+        .calendar-day small {
+            color: #8fa5c7;
+            display: block;
+            font-size: 11px;
+            margin-bottom: 6px;
+        }
+
+        .no-trade {
+            opacity: 0.5;
+        }
+
+
+        /* =========================================
+           WIN / LOSS / BREAKEVEN COUNT
+        ========================================= */
+
+        .day-stats {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .day-stats span {
+            font-size: 10px;
+            padding: 3px 5px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .day-win {
+            color: #18d89a;
+            background: rgba(24, 216, 154, 0.10);
+        }
+
+        .day-loss-count {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.10);
+        }
+
+        .day-be {
+            color: #f4c95d;
+            background: rgba(244, 201, 93, 0.10);
+        }
+
+
+        /* =========================================
+           SELECTED DAY TRADE
+        ========================================= */
+
+        .day-trade {
+            display: grid;
+            grid-template-columns: 1.5fr 0.8fr 1fr 1fr;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #161d29;
+            border: 1px solid #273348;
+            border-radius: 9px;
+        }
+
+        .day-trade strong {
+            color: #ffffff;
+        }
+
+        .day-trade span {
+            color: #8fa5c7;
+            font-size: 13px;
+        }
+
+
+        /* =========================================
+           BUY / SELL
+        ========================================= */
+
+        .day-trade .buy {
+            color: #18d89a;
+            font-weight: 700;
+        }
+
+        .day-trade .sell {
+            color: #ff6b6b;
+            font-weight: 700;
+        }
+
+
+        /* =========================================
+           RESULT
+        ========================================= */
+
+        .result-win {
+            color: #18d89a !important;
+            font-weight: 700;
+        }
+
+        .result-loss {
+            color: #ff6b6b !important;
+            font-weight: 700;
+        }
+
+        .result-breakeven {
+            color: #f4c95d !important;
+            font-weight: 700;
+        }
+
+
+        /* =========================================
+           P&L
+        ========================================= */
+
+        .positive {
+            color: #18d89a !important;
+            font-weight: 700;
+        }
+
+        .negative {
+            color: #ff6b6b !important;
+            font-weight: 700;
+        }
+
+        .zero {
+            color: #f4c95d !important;
+            font-weight: 700;
+        }
+
+
+        /* =========================================
+           EMPTY MESSAGE
+        ========================================= */
+
+        .empty {
+            color: #6f82a2;
+            padding: 20px 0;
+        }
+
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 900px) {
+
+            .calendar-grid {
+                gap: 5px;
+            }
+
+            .calendar-day {
+                min-height: 85px;
+                padding: 7px;
+            }
+
+            .day-trade {
+                grid-template-columns: 1fr 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .calendar-week {
+                gap: 3px;
+            }
+
+            .calendar-grid {
+                gap: 3px;
+            }
+
+            .calendar-day {
+                min-height: 70px;
+                padding: 5px;
+            }
+
+            .calendar-day strong {
+                font-size: 12px;
+            }
+
+            .day-profit,
+            .day-loss,
+            .day-breakeven {
+                font-size: 10px;
+            }
+
+            .calendar-day small {
+                font-size: 9px;
+            }
+
+            .day-stats span {
+                font-size: 8px;
+                padding: 2px 3px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+        </div>
+
+        <div>
+
+            <h2>FX Manager</h2>
+
+            <span>Trading Journal</span>
+
+        </div>
+
+    </div>
+
+
+    <nav class="sidebar-nav">
+
+        <a href="./index.html" class="nav-item">
+            <span>📊</span>
+            Dashboard
+        </a>
+
+        <a href="./calendar.html" class="nav-item active">
+            <span>📅</span>
+            Calendar
+        </a>
+
+        <a href="./history.html" class="nav-item">
+            <span>📝</span>
+            History
+        </a>
+
+        <a href="./trades.html" class="nav-item">
+            <span>💹</span>
+            Trades
+        </a>
+
+        <a href="./analytics.html" class="nav-item">
+            <span>📈</span>
+            Analytics
+        </a>
+
+        <a href="./goals.html" class="nav-item">
+            <span>🎯</span>
+            Goals
+        </a>
+
+    </nav>
+
+
+    <!-- PROFILE / SETTINGS -->
+
+    <div class="sidebar-bottom">
+
+        <a href="./settings.html" class="profile-mini">
+
+            <div class="profile-avatar" id="sidebarAvatar">
+                A
+            </div>
+
+            <div class="profile-mini-info">
+
+                <span
+                    class="profile-mini-name"
+                    id="sidebarProfileName">
+                    Trader
+                </span>
+
+                <span class="profile-mini-role">
+                    Trading Profile
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <a href="./settings.html" class="settings-link">
+
+            <span>⚙️</span>
+
+            Settings
+
+        </a>
+
+        <a href="#" class="settings-link" onclick="FXAuth.logout(); return false;">
+
+            <span>🚪</span>
+
+            Logout
+
+        </a>
+
+    </div>
+
+
+    <!-- SIDEBAR FOOTER -->
+
+    <div class="sidebar-footer">
+
+        <div class="status-dot">
+        </div>
+
+        <span>
+            Local Storage Active
+        </span>
+
+    </div>
+
+</aside>
+
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="main">
+
+
+        <!-- =========================
+             TOP BAR
+        ========================== -->
+
+        <header class="topbar">
+
+            <button
+                class="menu-btn"
+                type="button"
+                onclick="toggleSidebar()">
+
+                ☰
+
+            </button>
+
+
+            <div>
+
+                <h2>
+                    Trading Calendar
+                </h2>
+
+                <p>
+                    Track your daily trading performance
+                </p>
+
+            </div>
+
+
+            <div class="profile">
+
+                <div class="notification">
+                    🔔
+                </div>
+
+                <div class="avatar">
+                    A
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =========================
+             CALENDAR
+        ========================== -->
+
+        <section class="panel calendar-panel">
+
+
+            <div class="calendar-header">
+
+
+                <button
+                    type="button"
+                    onclick="changeMonth(-1)">
+
+                    ‹
+
+                </button>
+
+
+                <h2 id="monthYear">
+                    Loading...
+                </h2>
+
+
+                <button
+                    type="button"
+                    onclick="changeMonth(1)">
+
+                    ›
+
+                </button>
+
+
+            </div>
+
+
+
+            <!-- WEEK DAYS -->
+
+            <div class="calendar-week">
+
+                <span>MON</span>
+                <span>TUE</span>
+                <span>WED</span>
+                <span>THU</span>
+                <span>FRI</span>
+                <span>SAT</span>
+                <span>SUN</span>
+
+            </div>
+
+
+
+            <!-- CALENDAR GRID -->
+
+            <div
+                id="calendarGrid"
+                class="calendar-grid">
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =========================
+             SELECTED DAY
+        ========================== -->
+
+        <section class="panel">
+
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3 id="selectedDate">
+                        Select a date
+                    </h3>
+
+
+                    <p id="daySummary">
+                        Click a calendar date
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div id="dayTrades">
+
+                <p class="empty">
+                    No date selected.
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+</div>
+
+
+
+<!-- =========================
+     APP JS
+========================== -->
+
+<script src="./app.js"></script>
+
+
+
+<script>
+
+/* =========================================
+   FX MANAGER CALENDAR
+========================================= */
+
+
+/*
+    IMPORTANT:
+
+    The Calendar uses the SAME storage
+    as Dashboard, Trades and Analytics.
+
+    Storage key:
+
+        fxTrades
+*/
+
+
+function getCalendarTrades() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem("fxTrades")
+        ) || [];
+
+    } catch (error) {
+
+        console.error(
+            "Unable to read fxTrades:",
+            error
+        );
+
+        return [];
+
+    }
+
+}
+
+
+
+/* =========================================
+   CURRENT MONTH
+========================================= */
+
+let currentDate = new Date();
+
+
+
+/* =========================================
+   GET TODAY STRING
+========================================= */
+
+function getTodayString() {
+
+    const today =
+        new Date();
+
+    return (
+        today.getFullYear() +
+        "-" +
+        String(
+            today.getMonth() + 1
+        ).padStart(2, "0") +
+        "-" +
+        String(
+            today.getDate()
+        ).padStart(2, "0")
+    );
+
+}
+
+
+
+/* =========================================
+   NORMALIZE RESULT
+========================================= */
+
+function normalizeResult(result) {
+
+    const value =
+        String(result || "")
+            .trim()
+            .toUpperCase();
+
+
+    if (
+        value === "WIN" ||
+        value === "WON" ||
+        value === "PROFIT"
+    ) {
+
+        return "WIN";
+
+    }
+
+
+    if (
+        value === "LOSS" ||
+        value === "LOST"
+    ) {
+
+        return "LOSS";
+
+    }
+
+
+    return "BREAKEVEN";
+
+}
+
+
+
+/* =========================================
+   RENDER CALENDAR
+========================================= */
+
+function renderCalendar() {
+
+
+    const grid =
+        document.getElementById(
+            "calendarGrid"
+        );
+
+
+    const monthYear =
+        document.getElementById(
+            "monthYear"
+        );
+
+
+    if (!grid || !monthYear) {
+
+        return;
+
+    }
+
+
+
+    const year =
+        currentDate.getFullYear();
+
+
+    const month =
+        currentDate.getMonth();
+
+
+
+    /* MONTH NAME */
+
+    monthYear.textContent =
+        currentDate.toLocaleDateString(
+            "en-US",
+            {
+                month: "long",
+                year: "numeric"
+            }
+        );
+
+
+
+    /* CLEAR GRID */
+
+    grid.innerHTML = "";
+
+
+
+    /* FIRST DAY */
+
+    let firstDay =
+        new Date(
+            year,
+            month,
+            1
+        ).getDay();
+
+
+    /*
+        JavaScript:
+        Sunday = 0
+
+        Calendar:
+        Monday = 0
+    */
+
+    firstDay =
+        firstDay === 0
+            ? 6
+            : firstDay - 1;
+
+
+
+    /* DAYS IN MONTH */
+
+    const daysInMonth =
+        new Date(
+            year,
+            month + 1,
+            0
+        ).getDate();
+
+
+
+    /* LOAD TRADES */
+
+    const calendarTrades =
+        getCalendarTrades();
+
+
+
+    /* =====================================
+       EMPTY DAYS
+    ===================================== */
+
+    for (
+        let i = 0;
+        i < firstDay;
+        i++
+    ) {
+
+        const emptyDay =
+            document.createElement(
+                "div"
+            );
+
+
+        emptyDay.className =
+            "calendar-day empty-day";
+
+
+        grid.appendChild(
+            emptyDay
+        );
+
+    }
+
+
+
+    /* =====================================
+       CREATE DAYS
+    ===================================== */
+
+    for (
+        let day = 1;
+        day <= daysInMonth;
+        day++
+    ) {
+
+
+        const cell =
+            document.createElement(
+                "div"
+            );
+
+
+        cell.className =
+            "calendar-day";
+
+
+
+        /* DATE STRING */
+
+        const dateString =
+            `${year}-${String(
+                month + 1
+            ).padStart(2, "0")}-${String(
+                day
+            ).padStart(2, "0")}`;
+
+
+
+        /* TODAY */
+
+        if (
+            dateString ===
+            getTodayString()
+        ) {
+
+            cell.classList.add(
+                "today"
+            );
+
+        }
+
+
+
+        /* FIND TRADES */
+
+        const dayTrades =
+            calendarTrades.filter(
+                trade =>
+                    trade.date ===
+                    dateString
+            );
+
+
+
+        /* DAILY P&L */
+
+        const pnl =
+            dayTrades.reduce(
+                (
+                    total,
+                    trade
+                ) =>
+                    total +
+                    (
+                        Number(
+                            trade.pnl
+                        ) || 0
+                    ),
+                0
+            );
+
+
+
+        /* RESULTS */
+
+        const wins =
+            dayTrades.filter(
+                trade =>
+                    normalizeResult(
+                        trade.result
+                    ) === "WIN"
+            ).length;
+
+
+        const losses =
+            dayTrades.filter(
+                trade =>
+                    normalizeResult(
+                        trade.result
+                    ) === "LOSS"
+            ).length;
+
+
+        const breakevens =
+            dayTrades.filter(
+                trade =>
+                    normalizeResult(
+                        trade.result
+                    ) === "BREAKEVEN"
+            ).length;
+
+
+
+        /* =================================
+           DAY HTML
+        ================================= */
+
+        let dayHTML = `
+
+            <strong>
+                ${day}
+            </strong>
+
+        `;
+
+
+
+        if (
+            dayTrades.length > 0
+        ) {
+
+
+            let pnlClass =
+                "day-breakeven";
+
+
+            if (pnl > 0) {
+
+                pnlClass =
+                    "day-profit";
+
+            } else if (pnl < 0) {
+
+                pnlClass =
+                    "day-loss";
+
+            }
+
+
+            dayHTML += `
+
+                <div class="${pnlClass}">
+
+                    ${
+                        pnl > 0
+                            ? "+"
+                            : ""
+                    }$${pnl.toFixed(2)}
+
+                </div>
+
+
+                <small>
+
+                    ${dayTrades.length}
+
+                    ${
+                        dayTrades.length === 1
+                            ? "trade"
+                            : "trades"
+                    }
+
+                </small>
+
+
+                <div class="day-stats">
+
+                    ${
+                        wins > 0
+                            ? `
+                                <span class="day-win">
+                                    ${wins}W
+                                </span>
+                              `
+                            : ""
+                    }
+
+
+                    ${
+                        losses > 0
+                            ? `
+                                <span class="day-loss-count">
+                                    ${losses}L
+                                </span>
+                              `
+                            : ""
+                    }
+
+
+                    ${
+                        breakevens > 0
+                            ? `
+                                <span class="day-be">
+                                    ${breakevens}BE
+                                </span>
+                              `
+                            : ""
+                    }
+
+                </div>
+
+            `;
+
+        } else {
+
+
+            dayHTML += `
+
+                <small class="no-trade">
+                    No trades
+                </small>
+
+            `;
+
+        }
+
+
+
+        cell.innerHTML =
+            dayHTML;
+
+
+
+        /* =================================
+           CLICK DATE
+        ================================= */
+
+        cell.addEventListener(
+            "click",
+            function () {
+
+                showDay(
+                    dateString
+                );
+
+            }
+        );
+
+
+
+        grid.appendChild(
+            cell
+        );
+
+    }
+
+}
+
+
+
+/* =========================================
+   CHANGE MONTH
+========================================= */
+
+function changeMonth(
+    direction
+) {
+
+    currentDate.setMonth(
+        currentDate.getMonth() +
+        direction
+    );
+
+
+    renderCalendar();
+
+}
+
+
+
+/* =========================================
+   SHOW SELECTED DAY
+========================================= */
+
+function showDay(
+    dateString
+) {
+
+
+    const selected =
+        document.getElementById(
+            "selectedDate"
+        );
+
+
+    const summary =
+        document.getElementById(
+            "daySummary"
+        );
+
+
+    const container =
+        document.getElementById(
+            "dayTrades"
+        );
+
+
+    if (
+        !selected ||
+        !summary ||
+        !container
+    ) {
+
+        return;
+
+    }
+
+
+
+    /* LOAD TRADES */
+
+    const calendarTrades =
+        getCalendarTrades();
+
+
+
+    /* FILTER DATE */
+
+    const dayTrades =
+        calendarTrades.filter(
+            trade =>
+                trade.date ===
+                dateString
+        );
+
+
+
+    /* DISPLAY DATE */
+
+    const displayDate =
+        new Date(
+            dateString +
+            "T00:00:00"
+        );
+
+
+    selected.textContent =
+        displayDate.toLocaleDateString(
+            "en-IN",
+            {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }
+        );
+
+
+
+    /* =====================================
+       NO TRADES
+    ===================================== */
+
+    if (
+        dayTrades.length === 0
+    ) {
+
+        summary.textContent =
+            "No trades recorded";
+
+
+        container.innerHTML = `
+
+            <p class="empty">
+                No trades for this day.
+            </p>
+
+        `;
+
+
+        return;
+
+    }
+
+
+
+    /* =====================================
+       DAILY P&L
+    ===================================== */
+
+    const pnl =
+        dayTrades.reduce(
+            (
+                total,
+                trade
+            ) =>
+                total +
+                (
+                    Number(
+                        trade.pnl
+                    ) || 0
+                ),
+            0
+        );
+
+
+
+    /* =====================================
+       RESULTS
+    ===================================== */
+
+    const wins =
+        dayTrades.filter(
+            trade =>
+                normalizeResult(
+                    trade.result
+                ) === "WIN"
+        ).length;
+
+
+    const losses =
+        dayTrades.filter(
+            trade =>
+                normalizeResult(
+                    trade.result
+                ) === "LOSS"
+        ).length;
+
+
+    const breakevens =
+        dayTrades.filter(
+            trade =>
+                normalizeResult(
+                    trade.result
+                ) === "BREAKEVEN"
+        ).length;
+
+
+
+    /* =====================================
+       SUMMARY
+    ===================================== */
+
+    summary.textContent =
+
+        `${dayTrades.length} ${
+            dayTrades.length === 1
+                ? "trade"
+                : "trades"
+        } • ${wins}W / ${losses}L / ${breakevens}BE • ${
+            pnl > 0
+                ? "+"
+                : ""
+        }$${pnl.toFixed(2)}`;
+
+
+
+    /* =====================================
+       DISPLAY TRADES
+    ===================================== */
+
+    container.innerHTML =
+
+        dayTrades
+            .map(
+                trade => {
+
+
+                    const tradePnL =
+                        Number(
+                            trade.pnl
+                        ) || 0;
+
+
+
+                    /* P&L CLASS */
+
+                    let pnlClass =
+                        "zero";
+
+
+                    if (
+                        tradePnL > 0
+                    ) {
+
+                        pnlClass =
+                            "positive";
+
+                    } else if (
+                        tradePnL < 0
+                    ) {
+
+                        pnlClass =
+                            "negative";
+
+                    }
+
+
+
+                    /* RESULT */
+
+                    const result =
+                        normalizeResult(
+                            trade.result
+                        );
+
+
+                    let resultClass =
+                        "result-breakeven";
+
+
+                    if (
+                        result === "WIN"
+                    ) {
+
+                        resultClass =
+                            "result-win";
+
+                    } else if (
+                        result === "LOSS"
+                    ) {
+
+                        resultClass =
+                            "result-loss";
+
+                    }
+
+
+
+                    /* DIRECTION */
+
+                    const directionClass =
+                        trade.direction ===
+                        "BUY"
+                            ? "buy"
+                            : "sell";
+
+
+
+                    return `
+
+                        <div class="day-trade">
+
+
+                            <strong>
+
+                                ${
+                                    escapeHtml(
+                                        trade.pair ||
+                                        "-"
+                                    )
+                                }
+
+                            </strong>
+
+
+                            <span class="${directionClass}">
+
+                                ${
+                                    escapeHtml(
+                                        trade.direction ||
+                                        "-"
+                                    )
+                                }
+
+                            </span>
+
+
+                            <span class="${resultClass}">
+
+                                ${
+                                    result
+                                }
+
+                            </span>
+
+
+                            <strong class="${pnlClass}">
+
+                                ${
+                                    tradePnL > 0
+                                        ? "+"
+                                        : ""
+                                }$${tradePnL.toFixed(2)}
+
+                            </strong>
+
+
+                        </div>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+}
+
+
+
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
+function escapeHtml(value) {
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+
+/* =========================================
+   PAGE LOAD
+========================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        renderCalendar();
+
+    }
+);
+
+</script>
+
+
+<script src="./sidebar.js"></script>
+
+</body>
+
+</html>
