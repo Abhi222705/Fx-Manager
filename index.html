@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<script src="./auth.js"></script>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>FX Manager - Dashboard</title>
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="./style.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     SIDEBAR
+========================================= -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+        </div>
+
+        <div>
+
+            <h2>FX Manager</h2>
+
+            <span>Trading Journal</span>
+
+        </div>
+
+    </div>
+
+
+    <nav class="sidebar-nav">
+
+        <a href="./index.html" class="nav-item active">
+            <span>📊</span>
+            Dashboard
+        </a>
+
+        <a href="./calendar.html" class="nav-item">
+            <span>📅</span>
+            Calendar
+        </a>
+
+        <a href="./history.html" class="nav-item">
+            <span>📝</span>
+            History
+        </a>
+
+        <a href="./trades.html" class="nav-item">
+            <span>💹</span>
+            Trades
+        </a>
+
+        <a href="./analytics.html" class="nav-item">
+            <span>📈</span>
+            Analytics
+        </a>
+
+        <a href="./goals.html" class="nav-item">
+            <span>🎯</span>
+            Goals
+        </a>
+
+    </nav>
+
+
+    <!-- PROFILE / SETTINGS -->
+
+    <div class="sidebar-bottom">
+
+        <a href="./settings.html" class="profile-mini">
+
+            <div class="profile-avatar" id="sidebarAvatar">
+                A
+            </div>
+
+            <div class="profile-mini-info">
+
+                <span
+                    class="profile-mini-name"
+                    id="sidebarProfileName">
+                    Trader
+                </span>
+
+                <span class="profile-mini-role">
+                    Trading Profile
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <a href="./settings.html" class="settings-link">
+
+            <span>⚙️</span>
+
+            Settings
+
+        </a>
+
+        <a href="#" class="settings-link" onclick="FXAuth.logout(); return false;">
+
+            <span>🚪</span>
+
+            Logout
+
+        </a>
+
+    </div>
+
+
+    <!-- SIDEBAR FOOTER -->
+
+    <div class="sidebar-footer">
+
+        <div class="status-dot">
+        </div>
+
+        <span>
+            Local Storage Active
+        </span>
+
+    </div>
+
+</aside>
+
+
+
+<!-- =========================================
+     MAIN CONTENT
+========================================= -->
+
+<main class="main-content">
+
+
+    <!-- MOBILE HEADER -->
+
+    <div class="mobile-header">
+
+        <button onclick="toggleSidebar()">
+            ☰
+        </button>
+
+        <h2>FX Manager</h2>
+
+    </div>
+
+
+
+    <!-- =====================================
+         PAGE HEADER
+    ====================================== -->
+
+    <header class="page-header">
+
+        <div>
+
+            <h1>
+                Dashboard
+            </h1>
+
+            <p id="today">
+                Today
+            </p>
+
+        </div>
+
+
+        <a href="./trades.html"
+           class="primary-button">
+
+            + Add Trade
+
+        </a>
+
+    </header>
+
+
+
+    <!-- =====================================
+         STAT CARDS
+    ====================================== -->
+
+    <section class="stats-grid">
+
+
+        <!-- ACCOUNT BALANCE -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                💰
+            </div>
+
+            <div>
+
+                <span class="stat-label">
+                    Account Balance
+                </span>
+
+                <h2 id="accountBalance">
+                    $0.00
+                </h2>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TOTAL PNL -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📊
+            </div>
+
+            <div>
+
+                <span class="stat-label">
+                    Total P&L
+                </span>
+
+                <h2 id="totalPnL">
+                    $0.00
+                </h2>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- WIN RATE -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🎯
+            </div>
+
+            <div>
+
+                <span class="stat-label">
+                    Win Rate
+                </span>
+
+                <h2 id="winRate">
+                    0.0%
+                </h2>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TOTAL TRADES -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                💹
+            </div>
+
+            <div>
+
+                <span class="stat-label">
+                    Total Trades
+                </span>
+
+                <h2 id="tradeCount">
+                    0
+                </h2>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- HIGHEST PROFIT TRADE -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🏆
+            </div>
+
+            <div>
+
+                <span class="stat-label">
+                    Highest Profit Trade
+                </span>
+
+                <h2 id="highestProfitTrade">
+                    $0.00
+                </h2>
+
+                <span id="highestProfitDetails">
+                    No trades yet
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- HIGHEST LOSS TRADE -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📉
+            </div>
+
+            <div>
+
+                <span class="stat-label">
+                    Highest Loss Trade
+                </span>
+
+                <h2 id="highestLossTrade">
+                    $0.00
+                </h2>
+
+                <span id="highestLossDetails">
+                    No trades yet
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================
+         PERFORMANCE CHART
+    ====================================== -->
+
+    <section class="dashboard-card performance-card">
+
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Performance
+                </h2>
+
+                <p>
+                    Cumulative P&L from your real trades
+                </p>
+
+            </div>
+
+
+            <select id="chartRange"
+                    class="chart-range">
+
+                <option value="7">
+                    7 Days
+                </option>
+
+                <option value="30" selected>
+                    30 Days
+                </option>
+
+                <option value="90">
+                    90 Days
+                </option>
+
+                <option value="365">
+                    1 Year
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="chart-wrapper">
+
+            <canvas id="performanceChart">
+            </canvas>
+
+            <div id="chartEmptyState"
+                 class="chart-empty">
+
+                No trades available for this period.
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================
+         BOTTOM GRID
+    ====================================== -->
+
+    <section class="dashboard-two-column">
+
+
+        <!-- RECENT TRADES -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+                        Recent Trades
+                    </h2>
+
+                    <p>
+                        Your latest trading activity
+                    </p>
+
+                </div>
+
+
+                <a href="./trades.html"
+                   class="text-link">
+
+                    View All
+
+                </a>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Pair</th>
+
+                            <th>Direction</th>
+
+                            <th>Entry</th>
+
+                            <th>Exit</th>
+
+                            <th>RR</th>
+
+                            <th>Result</th>
+
+                            <th>P&L</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="recentTrades">
+
+                        <tr>
+
+                            <td colspan="7"
+                                class="empty-table">
+
+                                No trades yet.
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TODAY'S JOURNAL -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+                        Today's Journal
+                    </h2>
+
+                    <p>
+                        Your trading mindset
+                    </p>
+
+                </div>
+
+
+                <a href="./journal.html"
+                   class="text-link">
+
+                    Open Journal
+
+                </a>
+
+            </div>
+
+
+            <div class="journal-summary">
+
+
+                <div class="journal-date-box">
+
+                    <span>
+                        Date
+                    </span>
+
+                    <strong id="journalDate">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="journal-item">
+
+                    <span>
+                        Market Bias
+                    </span>
+
+                    <strong id="journalBias">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="journal-item">
+
+                    <span>
+                        Trading Session
+                    </span>
+
+                    <strong id="journalSession">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="journal-item">
+
+                    <span>
+                        Emotion
+                    </span>
+
+                    <strong id="journalEmotion">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="journal-item">
+
+                    <span>
+                        Trades Today
+                    </span>
+
+                    <strong id="journalTrades">
+                        0
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+
+<!-- =========================================
+     APP JAVASCRIPT
+========================================= -->
+
+<script src="./app.js"></script>
+
+
+<script>
+
+/* =========================================
+   GET TRADES
+========================================= */
+
+function getDashboardTrades() {
+
+    return JSON.parse(
+        localStorage.getItem("fxTrades")
+    ) || [];
+
+}
+
+
+
+/* =========================================
+   ACCOUNT BALANCE
+========================================= */
+
+function updateAccountBalance() {
+
+    const startingBalance =
+        Number(
+            localStorage.getItem(
+                "fxStartingBalance"
+            )
+        ) || 0;
+
+
+    const trades =
+        getDashboardTrades();
+
+
+    let totalPnL = 0;
+
+
+    trades.forEach(function (trade) {
+
+        totalPnL +=
+            Number(trade.pnl) || 0;
+
+    });
+
+
+    const currentBalance =
+        startingBalance + totalPnL;
+
+
+    const balanceElement =
+        document.getElementById(
+            "accountBalance"
+        );
+
+
+    const pnlElement =
+        document.getElementById(
+            "totalPnL"
+        );
+
+
+    if (balanceElement) {
+
+        balanceElement.textContent =
+            "$" +
+            currentBalance.toLocaleString(
+                "en-US",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            );
+
+    }
+
+
+    if (pnlElement) {
+
+        let pnlText;
+
+
+        if (totalPnL > 0) {
+
+            pnlText =
+                "+$" +
+                totalPnL.toLocaleString(
+                    "en-US",
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
+                );
+
+        }
+
+        else if (totalPnL < 0) {
+
+            pnlText =
+                "-$" +
+                Math.abs(totalPnL).toLocaleString(
+                    "en-US",
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
+                );
+
+        }
+
+        else {
+
+            pnlText = "$0.00";
+
+        }
+
+
+        pnlElement.textContent =
+            pnlText;
+
+    }
+
+}
+
+
+
+/* =========================================
+   WIN RATE & TRADE COUNT
+========================================= */
+
+function updateDashboardStats() {
+
+    const trades =
+        getDashboardTrades();
+
+
+    const tradeCountElement =
+        document.getElementById(
+            "tradeCount"
+        );
+
+
+    const winRateElement =
+        document.getElementById(
+            "winRate"
+        );
+
+
+    if (tradeCountElement) {
+
+        tradeCountElement.textContent =
+            trades.length;
+
+    }
+
+
+    let wins = 0;
+
+
+    trades.forEach(function (trade) {
+
+        const pnl =
+            Number(trade.pnl) || 0;
+
+
+        if (pnl > 0) {
+
+            wins++;
+
+        }
+
+    });
+
+
+    const winRate =
+        trades.length > 0
+            ? (wins / trades.length) * 100
+            : 0;
+
+
+    if (winRateElement) {
+
+        winRateElement.textContent =
+            winRate.toFixed(1) + "%";
+
+    }
+
+}
+
+
+
+/* =========================================
+   HIGHEST PROFIT & LOSS
+========================================= */
+
+function updateHighestProfitLoss() {
+
+    const trades =
+        getDashboardTrades();
+
+
+    const profitElement =
+        document.getElementById(
+            "highestProfitTrade"
+        );
+
+
+    const profitDetails =
+        document.getElementById(
+            "highestProfitDetails"
+        );
+
+
+    const lossElement =
+        document.getElementById(
+            "highestLossTrade"
+        );
+
+
+    const lossDetails =
+        document.getElementById(
+            "highestLossDetails"
+        );
+
+
+    if (!trades.length) {
+
+        profitElement.textContent =
+            "$0.00";
+
+        profitDetails.textContent =
+            "No trades yet";
+
+        lossElement.textContent =
+            "$0.00";
+
+        lossDetails.textContent =
+            "No trades yet";
+
+        return;
+
+    }
+
+
+    /* PROFITABLE TRADES */
+
+    const profitableTrades =
+        trades.filter(function (trade) {
+
+            return Number(trade.pnl) > 0;
+
+        });
+
+
+    /* LOSING TRADES */
+
+    const losingTrades =
+        trades.filter(function (trade) {
+
+            return Number(trade.pnl) < 0;
+
+        });
+
+
+    /* HIGHEST PROFIT */
+
+    if (profitableTrades.length > 0) {
+
+        const highestProfit =
+            profitableTrades.reduce(
+                function (highest, trade) {
+
+                    return Number(trade.pnl) >
+                           Number(highest.pnl)
+                        ? trade
+                        : highest;
+
+                }
+            );
+
+
+        const profit =
+            Number(highestProfit.pnl);
+
+
+        profitElement.textContent =
+            "+$" +
+            profit.toFixed(2);
+
+
+        profitDetails.textContent =
+            (highestProfit.pair ||
+                "Unknown Pair") +
+            " • " +
+            (highestProfit.direction ||
+                "—");
+
+    }
+
+    else {
+
+        profitElement.textContent =
+            "$0.00";
+
+        profitDetails.textContent =
+            "No winning trades";
+
+    }
+
+
+    /* HIGHEST LOSS */
+
+    if (losingTrades.length > 0) {
+
+        const highestLoss =
+            losingTrades.reduce(
+                function (lowest, trade) {
+
+                    return Number(trade.pnl) <
+                           Number(lowest.pnl)
+                        ? trade
+                        : lowest;
+
+                }
+            );
+
+
+        const loss =
+            Number(highestLoss.pnl);
+
+
+        lossElement.textContent =
+            "$" +
+            loss.toFixed(2);
+
+
+        lossDetails.textContent =
+            (highestLoss.pair ||
+                "Unknown Pair") +
+            " • " +
+            (highestLoss.direction ||
+                "—");
+
+    }
+
+    else {
+
+        lossElement.textContent =
+            "$0.00";
+
+        lossDetails.textContent =
+            "No losing trades";
+
+    }
+
+}
+
+
+
+/* =========================================
+   SIDEBAR PROFILE
+========================================= */
+
+function updateSidebarProfile() {
+
+    const profile =
+        JSON.parse(
+            localStorage.getItem(
+                "fxProfile"
+            )
+        ) || {};
+
+
+    const name =
+        profile.name || "Trader";
+
+
+    const avatar =
+        profile.avatar ||
+        name.charAt(0).toUpperCase();
+
+
+    const nameElement =
+        document.getElementById(
+            "sidebarProfileName"
+        );
+
+
+    const avatarElement =
+        document.getElementById(
+            "sidebarAvatar"
+        );
+
+
+    if (nameElement) {
+
+        nameElement.textContent =
+            name;
+
+    }
+
+
+    if (avatarElement) {
+
+        avatarElement.textContent =
+            avatar
+                .substring(0, 2)
+                .toUpperCase();
+
+    }
+
+}
+
+
+
+/* =========================================
+   UPDATE DASHBOARD
+========================================= */
+
+function updateDashboard() {
+
+    updateAccountBalance();
+
+    updateDashboardStats();
+
+    updateHighestProfitLoss();
+
+    updateSidebarProfile();
+
+}
+
+
+
+/* =========================================
+   PAGE LOAD
+========================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        updateDashboard();
+
+    }
+);
+
+
+
+/* =========================================
+   STORAGE UPDATE
+========================================= */
+
+window.addEventListener(
+    "storage",
+    function (event) {
+
+        if (
+            event.key === "fxTrades" ||
+            event.key === "fxStartingBalance" ||
+            event.key === "fxProfile"
+        ) {
+
+            updateDashboard();
+
+        }
+
+    }
+);
+
+</script>
+
+
+<script src="./sidebar.js"></script>
+
+</body>
+
+</html>

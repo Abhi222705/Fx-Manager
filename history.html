@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<script src="./auth.js"></script>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>FX Manager | History</title>
+
+    <!-- Main CSS -->
+    <link rel="stylesheet"
+          href="./style.css">
+
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</head>
+
+
+<body>
+
+<!-- =========================================
+     SIDEBAR
+========================================= -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+        </div>
+
+        <div>
+
+            <h2>FX Manager</h2>
+
+            <span>Trading Journal</span>
+
+        </div>
+
+    </div>
+
+
+    <nav class="sidebar-nav">
+
+        <a href="./index.html" class="nav-item">
+            <span>📊</span>
+            Dashboard
+        </a>
+
+        <a href="./calendar.html" class="nav-item">
+            <span>📅</span>
+            Calendar
+        </a>
+
+        <a href="./history.html" class="nav-item active">
+            <span>📝</span>
+            History
+        </a>
+
+        <a href="./trades.html" class="nav-item">
+            <span>💹</span>
+            Trades
+        </a>
+
+        <a href="./analytics.html" class="nav-item">
+            <span>📈</span>
+            Analytics
+        </a>
+
+        <a href="./goals.html" class="nav-item">
+            <span>🎯</span>
+            Goals
+        </a>
+
+    </nav>
+
+
+    <!-- PROFILE / SETTINGS -->
+
+    <div class="sidebar-bottom">
+
+        <a href="./settings.html" class="profile-mini">
+
+            <div class="profile-avatar" id="sidebarAvatar">
+                A
+            </div>
+
+            <div class="profile-mini-info">
+
+                <span
+                    class="profile-mini-name"
+                    id="sidebarProfileName">
+                    Trader
+                </span>
+
+                <span class="profile-mini-role">
+                    Trading Profile
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <a href="./settings.html" class="settings-link">
+
+            <span>⚙️</span>
+
+            Settings
+
+        </a>
+
+        <a href="#" class="settings-link" onclick="FXAuth.logout(); return false;">
+
+            <span>🚪</span>
+
+            Logout
+
+        </a>
+
+    </div>
+
+
+    <!-- SIDEBAR FOOTER -->
+
+    <div class="sidebar-footer">
+
+        <div class="status-dot">
+        </div>
+
+        <span>
+            Local Storage Active
+        </span>
+
+    </div>
+
+</aside>
+
+
+
+<!-- =========================================
+     MAIN CONTENT
+========================================= -->
+
+<main class="main-content">
+
+
+    <!-- MOBILE HEADER -->
+
+    <div class="mobile-header">
+
+        <button onclick="toggleSidebar()">
+            ☰
+        </button>
+
+        <h2>
+            FX Manager
+        </h2>
+
+    </div>
+
+
+
+    <!-- =====================================
+         PAGE HEADER
+    ====================================== -->
+
+    <header class="page-header">
+
+        <div>
+
+            <h1>
+                Trade History
+            </h1>
+
+            <p>
+                View and export your complete trading history
+            </p>
+
+        </div>
+
+
+        <button class="primary-button"
+                onclick="exportTradeHistoryPDF()">
+
+            📄 Export PDF
+
+        </button>
+
+    </header>
+
+
+
+    <!-- =====================================
+         SUMMARY CARDS
+    ====================================== -->
+
+    <section class="stats-grid">
+
+
+        <!-- TOTAL TRADES -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                💹
+            </div>
+
+            <div>
+
+                <span class="stat-label">
+                    Total Trades
+                </span>
+
+                <h2 id="historyTotalTrades">
+                    0
+                </h2>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- WINNING TRADES -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🟢
+            </div>
+
+            <div>
+
+                <span class="stat-label">
+                    Winning Trades
+                </span>
+
+                <h2 id="historyWinningTrades">
+                    0
+                </h2>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- LOSING TRADES -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🔴
+            </div>
+
+            <div>
+
+                <span class="stat-label">
+                    Losing Trades
+                </span>
+
+                <h2 id="historyLosingTrades">
+                    0
+                </h2>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TOTAL P&L -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                💰
+            </div>
+
+            <div>
+
+                <span class="stat-label">
+                    Total P&L
+                </span>
+
+                <h2 id="historyTotalPnL">
+                    $0.00
+                </h2>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================
+         TRADE HISTORY
+    ====================================== -->
+
+    <section class="dashboard-card"
+             style="margin-top: 24px;">
+
+
+        <!-- HEADER -->
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    All Trades
+                </h2>
+
+                <p>
+                    Complete history of your recorded trades
+                </p>
+
+            </div>
+
+
+            <!-- SEARCH -->
+
+            <div>
+
+                <input
+                    type="text"
+                    id="historySearch"
+                    placeholder="Search trades..."
+                    style="
+                        padding: 10px 14px;
+                        border-radius: 10px;
+                        border: 1px solid rgba(255,255,255,0.10);
+                        background: rgba(0,0,0,0.18);
+                        color: inherit;
+                        outline: none;
+                        width: 220px;
+                    "
+                    oninput="renderHistoryTrades()">
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TABLE -->
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Pair
+                        </th>
+
+                        <th>
+                            Direction
+                        </th>
+
+                        <th>
+                            Entry
+                        </th>
+
+                        <th>
+                            Exit
+                        </th>
+
+                        <th>
+                            Lot
+                        </th>
+
+                        <th>
+                            RR
+                        </th>
+
+                        <th>
+                            Result
+                        </th>
+
+                        <th>
+                            P&L
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="historyTrades">
+
+                    <tr>
+
+                        <td colspan="9"
+                            class="empty-table">
+
+                            No trades yet.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+
+</main>
+
+
+
+<!-- =========================================
+     HISTORY JAVASCRIPT
+========================================= -->
+
+<script>
+
+
+/* =========================================
+   LOAD TRADES
+========================================= */
+
+function getHistoryTrades() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem("fxTrades")
+        ) || [];
+
+    } catch (error) {
+
+        console.error(
+            "Unable to load trades:",
+            error
+        );
+
+        return [];
+
+    }
+
+}
+
+
+
+/* =========================================
+   FORMAT MONEY
+========================================= */
+
+function formatHistoryMoney(value) {
+
+    const number =
+        Number(value) || 0;
+
+    return (
+        number >= 0 ? "+" : "-"
+    ) +
+    "$" +
+    Math.abs(number).toFixed(2);
+
+}
+
+
+
+/* =========================================
+   FORMAT DATE
+========================================= */
+
+function formatHistoryDate(dateValue) {
+
+    if (!dateValue) {
+        return "—";
+    }
+
+    const date =
+        new Date(dateValue + "T00:00:00");
+
+    if (isNaN(date.getTime())) {
+        return dateValue;
+    }
+
+    return date.toLocaleDateString(
+        "en-IN",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
+function escapeHistoryHTML(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+
+/* =========================================
+   UPDATE SUMMARY
+========================================= */
+
+function updateHistorySummary(trades) {
+
+    const totalTrades =
+        trades.length;
+
+
+    const winningTrades =
+        trades.filter(
+            trade =>
+                String(trade.result || "").toUpperCase() === "WIN"
+                ||
+                Number(trade.pnl) > 0
+        ).length;
+
+
+    const losingTrades =
+        trades.filter(
+            trade =>
+                String(trade.result || "").toUpperCase() === "LOSS"
+                ||
+                Number(trade.pnl) < 0
+        ).length;
+
+
+    const totalPnL =
+        trades.reduce(
+            (total, trade) =>
+                total + (Number(trade.pnl) || 0),
+            0
+        );
+
+
+    const totalElement =
+        document.getElementById(
+            "historyTotalTrades"
+        );
+
+    const winningElement =
+        document.getElementById(
+            "historyWinningTrades"
+        );
+
+    const losingElement =
+        document.getElementById(
+            "historyLosingTrades"
+        );
+
+    const pnlElement =
+        document.getElementById(
+            "historyTotalPnL"
+        );
+
+
+    if (totalElement) {
+
+        totalElement.textContent =
+            totalTrades;
+
+    }
+
+
+    if (winningElement) {
+
+        winningElement.textContent =
+            winningTrades;
+
+    }
+
+
+    if (losingElement) {
+
+        losingElement.textContent =
+            losingTrades;
+
+    }
+
+
+    if (pnlElement) {
+
+        pnlElement.textContent =
+            formatHistoryMoney(totalPnL);
+
+    }
+
+}
+
+
+
+/* =========================================
+   RENDER TRADE HISTORY
+========================================= */
+
+function renderHistoryTrades() {
+
+    const tableBody =
+        document.getElementById(
+            "historyTrades"
+        );
+
+
+    if (!tableBody) {
+        return;
+    }
+
+
+    const allTrades =
+        getHistoryTrades();
+
+
+    updateHistorySummary(
+        allTrades
+    );
+
+
+    const searchInput =
+        document.getElementById(
+            "historySearch"
+        );
+
+
+    const search =
+        searchInput
+            ? searchInput.value
+                .trim()
+                .toLowerCase()
+            : "";
+
+
+    const filteredTrades =
+        allTrades.filter(trade => {
+
+            if (!search) {
+                return true;
+            }
+
+
+            const searchableText = [
+
+                trade.date,
+
+                trade.pair,
+
+                trade.direction,
+
+                trade.session,
+
+                trade.strategy,
+
+                trade.result,
+
+                trade.rr,
+
+                trade.notes
+
+            ]
+            .join(" ")
+            .toLowerCase();
+
+
+            return searchableText.includes(
+                search
+            );
+
+        });
+
+
+    if (filteredTrades.length === 0) {
+
+        tableBody.innerHTML = `
+
+            <tr>
+
+                <td colspan="9"
+                    class="empty-table">
+
+                    ${
+                        allTrades.length === 0
+                            ? "No trades yet."
+                            : "No trades match your search."
+                    }
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+
+    /* Sort newest first */
+
+    filteredTrades.sort(
+        (a, b) => {
+
+            const dateA =
+                new Date(
+                    (a.date || "") +
+                    "T00:00:00"
+                );
+
+            const dateB =
+                new Date(
+                    (b.date || "") +
+                    "T00:00:00"
+                );
+
+
+            return dateB - dateA;
+
+        }
+    );
+
+
+
+    tableBody.innerHTML =
+        filteredTrades
+            .map(trade => {
+
+                const pnl =
+                    Number(trade.pnl) || 0;
+
+
+                const result =
+                    String(
+                        trade.result || ""
+                    ).toUpperCase();
+
+
+                let resultClass =
+                    "";
+
+
+                if (result === "WIN") {
+
+                    resultClass =
+                        "history-win";
+
+                } else if (result === "LOSS") {
+
+                    resultClass =
+                        "history-loss";
+
+                } else {
+
+                    resultClass =
+                        "history-breakeven";
+
+                }
+
+
+
+                const pnlClass =
+                    pnl > 0
+                        ? "history-profit"
+                        : pnl < 0
+                            ? "history-loss"
+                            : "history-neutral";
+
+
+
+                return `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHistoryHTML(
+                                formatHistoryDate(
+                                    trade.date
+                                )
+                            )}
+                        </td>
+
+
+                        <td>
+                            <strong>
+                                ${escapeHistoryHTML(
+                                    trade.pair || "—"
+                                )}
+                            </strong>
+                        </td>
+
+
+                        <td>
+                            ${escapeHistoryHTML(
+                                trade.direction || "—"
+                            )}
+                        </td>
+
+
+                        <td>
+                            ${escapeHistoryHTML(
+                                trade.entry ?? "—"
+                            )}
+                        </td>
+
+
+                        <td>
+                            ${escapeHistoryHTML(
+                                trade.exit ?? "—"
+                            )}
+                        </td>
+
+
+                        <td>
+                            ${escapeHistoryHTML(
+                                trade.lot ?? "—"
+                            )}
+                        </td>
+
+
+                        <td>
+                            ${escapeHistoryHTML(
+                                trade.rr || "—"
+                            )}
+                        </td>
+
+
+                        <td>
+
+                            <span class="${resultClass}">
+
+                                ${escapeHistoryHTML(
+                                    result || "—"
+                                )}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <strong class="${pnlClass}">
+
+                                ${formatHistoryMoney(
+                                    pnl
+                                )}
+
+                            </strong>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            })
+            .join("");
+
+}
+
+
+
+/* =========================================
+   PDF EXPORT
+========================================= */
+
+function exportTradeHistoryPDF() {
+
+    const trades = getHistoryTrades();
+
+    if (trades.length === 0) {
+        alert("There are no trades to export.");
+        return;
+    }
+
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+        alert("PDF library could not be loaded. Please check your internet connection and try again.");
+        return;
+    }
+
+    try {
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+
+    const W = 297, H = 210, M = 10;
+
+    const COL = {
+        navy: [8, 11, 18], head: [30, 36, 50], green: [32, 216, 151], greenD: [14, 150, 104],
+        red: [214, 62, 74], text: [26, 31, 42], muted: [112, 120, 134], line: [226, 230, 236],
+        zebra: [246, 248, 251], gRow: [232, 248, 240], rRow: [253, 236, 238], gSolid: [22, 163, 112], rSolid: [220, 53, 69], nSolid: [132, 140, 154], card: [242, 245, 249], gTint: [220, 246, 235], rTint: [252, 229, 231], nTint: [233, 236, 241]
+    };
+
+    const fill = c => pdf.setFillColor(c[0], c[1], c[2]);
+    const ink = c => pdf.setTextColor(c[0], c[1], c[2]);
+    const stroke = c => pdf.setDrawColor(c[0], c[1], c[2]);
+    const signed = v => (v < 0 ? "-" : "+") + "$" + Math.abs(v).toFixed(2);
+    const plain = v => (v < 0 ? "-$" : "$") + Math.abs(v).toFixed(2);
+    const pnlColor = v => v > 0 ? COL.greenD : v < 0 ? COL.red : COL.muted;
+    const pnlOf = t => Number(t.pnl) || 0;
+    /* every decimal number in the PDF is shown with exactly 2 digits after the point */
+    const fmt2 = v => {
+        if (v === undefined || v === null || v === "") return "-";
+        if (isFinite(Number(v))) return Number(v).toFixed(2);
+        return String(v).replace(/\d+\.\d+/g, m => Number(m).toFixed(2));
+    };
+    const clip = (s, n) => { s = String(s); return s.length > n ? s.slice(0, n - 1) + "." : s; };
+
+    /* ---------- statistics ---------- */
+
+    const asc = trades.slice().sort((a, b) =>
+        String(a.date || "").localeCompare(String(b.date || "")) || (Number(a.id) || 0) - (Number(b.id) || 0));
+
+    const n = asc.length;
+    const wins = asc.filter(t => pnlOf(t) > 0), losses = asc.filter(t => pnlOf(t) < 0);
+    const be = n - wins.length - losses.length;
+    const gw = wins.reduce((s, t) => s + pnlOf(t), 0);
+    const gl = Math.abs(losses.reduce((s, t) => s + pnlOf(t), 0));
+    const net = gw - gl;
+    const winRate = (wins.length / n) * 100;
+    const pf = gl > 0 ? (gw / gl).toFixed(2) : (gw > 0 ? "n/a" : "0.00");
+    const avgWin = wins.length ? gw / wins.length : 0;
+    const avgLoss = losses.length ? -gl / losses.length : 0;
+    const best = Math.max.apply(null, asc.map(pnlOf));
+    const worst = Math.min.apply(null, asc.map(pnlOf));
+
+    let run = 0, peak = 0, maxDD = 0;
+    const cum = asc.map(t => { run += pnlOf(t); peak = Math.max(peak, run); maxDD = Math.max(maxDD, peak - run); return run; });
+
+    const dated = asc.filter(t => t.date);
+    const period = dated.length
+        ? formatHistoryDate(dated[0].date) + " - " + formatHistoryDate(dated[dated.length - 1].date) : "All trades";
+
+    let trader = "";
+    try { trader = (JSON.parse(localStorage.getItem("fxProfile")) || {}).name || ""; } catch (e) {}
+
+    /* ---------- page furniture ---------- */
+
+    function bigHeader() {
+        fill(COL.navy); pdf.rect(0, 0, W, 30, "F");
+        fill(COL.green); pdf.rect(0, 30, W, 1.2, "F");
+
+        pdf.roundedRect(M, 7, 16, 16, 3, 3, "F");
+        fill(COL.navy);
+        pdf.rect(13.2, 15.5, 2.6, 4.5, "F"); pdf.rect(17.7, 12.5, 2.6, 7.5, "F"); pdf.rect(22.2, 9.5, 2.6, 10.5, "F");
+
+        ink([255, 255, 255]); pdf.setFont("helvetica", "bold"); pdf.setFontSize(18);
+        pdf.text("FX Manager", M + 21, 15);
+        ink(COL.green); pdf.setFontSize(8.5);
+        pdf.text("TRADE HISTORY REPORT", M + 21, 21.5);
+
+        pdf.setFontSize(10); ink([255, 255, 255]);
+        if (trader) pdf.text(trader, W - M, 12, { align: "right" });
+        pdf.setFont("helvetica", "normal"); pdf.setFontSize(8.5); ink([170, 180, 196]);
+        pdf.text("Period: " + period, W - M, 18, { align: "right" });
+        pdf.text("Generated: " + new Date().toLocaleString("en-IN"), W - M, 23.5, { align: "right" });
+    }
+
+    function slimHeader() {
+        fill(COL.navy); pdf.rect(0, 0, W, 9, "F");
+        fill(COL.green); pdf.rect(0, 9, W, 0.8, "F");
+        pdf.setFont("helvetica", "bold"); pdf.setFontSize(8.5); ink([255, 255, 255]);
+        pdf.text("FX Manager", M, 6);
+        pdf.setFont("helvetica", "normal"); ink([170, 180, 196]);
+        pdf.text("Trade History Report", W - M, 6, { align: "right" });
+    }
+
+    /* ---------- summary cards ---------- */
+
+    bigHeader();
+
+    const cards = [
+        ["TOTAL TRADES", String(n), COL.text, wins.length + "W / " + losses.length + "L / " + be + "BE"],
+        ["WIN RATE", winRate.toFixed(1) + "%", winRate >= 50 ? COL.greenD : COL.red, wins.length + " of " + n + " trades"],
+        ["NET P&L", signed(net), pnlColor(net), "Gross +$" + gw.toFixed(2) + " / -$" + gl.toFixed(2)],
+        ["PROFIT FACTOR", pf, COL.text, "Gross profit / gross loss"],
+        ["AVG WIN", signed(avgWin), COL.greenD, "Avg loss " + signed(avgLoss)],
+        ["MAX DRAWDOWN", maxDD > 0 ? "-$" + maxDD.toFixed(2) : "$0.00", maxDD > 0 ? COL.red : COL.text, "Best " + signed(best) + " / Worst " + signed(worst)]
+    ];
+
+    const gap = 4, cw = (W - M * 2 - gap * 5) / 6;
+    cards.forEach((c, i) => {
+        const x = M + i * (cw + gap), y = 37;
+        fill(COL.card); pdf.roundedRect(x, y, cw, 23, 2, 2, "F");
+        fill(c[2]); pdf.rect(x, y + 3, 1, 17, "F");
+        pdf.setFont("helvetica", "bold"); pdf.setFontSize(6.5); ink(COL.muted);
+        pdf.text(c[0], x + 4, y + 6.5);
+        pdf.setFontSize(13); ink(c[2]);
+        pdf.text(c[1], x + 4, y + 14.5);
+        pdf.setFont("helvetica", "normal"); pdf.setFontSize(6.5); ink(COL.muted);
+        pdf.text(clip(c[3], 34), x + 4, y + 19.5);
+    });
+
+    /* ---------- cumulative P&L chart ---------- */
+
+    (function chart() {
+        const cx = M, cy = 65, cwid = W - M * 2, ch = 38;
+        fill([255, 255, 255]); stroke(COL.line); pdf.setLineWidth(0.3);
+        pdf.roundedRect(cx, cy, cwid, ch, 2, 2, "FD");
+
+        pdf.setFont("helvetica", "bold"); pdf.setFontSize(7); ink(COL.muted);
+        pdf.text("CUMULATIVE P&L", cx + 4, cy + 6);
+
+        const px = cx + 24, pw = cwid - 24 - 28, py = cy + 10, ph = ch - 17;
+        let lo = Math.min(0, Math.min.apply(null, cum)), hi = Math.max(0, Math.max.apply(null, cum));
+        if (hi === lo) { hi += 1; lo -= 1; }
+        const pad = (hi - lo) * 0.08; hi += pad; lo -= pad;
+        const Y = v => py + ph - ((v - lo) / (hi - lo)) * ph;
+
+        pdf.setFont("helvetica", "normal"); pdf.setFontSize(6.5);
+        for (let i = 0; i <= 3; i++) {
+            const v = lo + ((hi - lo) * i) / 3, yy = Y(v);
+            stroke([236, 239, 244]); pdf.setLineWidth(0.2); pdf.line(px, yy, px + pw, yy);
+            ink(COL.muted); pdf.text("$" + Math.round(v), px - 2, yy + 1.6, { align: "right" });
+        }
+
+        stroke([170, 178, 190]); pdf.setLineWidth(0.3);
+        if (pdf.setLineDashPattern) pdf.setLineDashPattern([1.2, 1.2], 0);
+        pdf.line(px, Y(0), px + pw, Y(0));
+        if (pdf.setLineDashPattern) pdf.setLineDashPattern([], 0);
+
+        const step = Math.max(1, Math.ceil(cum.length / 250));
+        const pts = [];
+        cum.forEach((v, i) => { if (i % step === 0 || i === cum.length - 1) pts.push([px + (cum.length > 1 ? (pw * i) / (cum.length - 1) : pw / 2), Y(v)]); });
+
+        stroke(COL.greenD); pdf.setLineWidth(0.7);
+        for (let i = 1; i < pts.length; i++) pdf.line(pts[i - 1][0], pts[i - 1][1], pts[i][0], pts[i][1]);
+
+        const last = pts[pts.length - 1];
+        fill(COL.greenD); pdf.circle(last[0], last[1], 1.1, "F");
+        pdf.setFont("helvetica", "bold"); pdf.setFontSize(8); ink(pnlColor(net));
+        pdf.text(signed(net), px + pw + 3, last[1] + 1.4);
+
+        pdf.setFont("helvetica", "normal"); pdf.setFontSize(6.5); ink(COL.muted);
+        pdf.text(dated.length ? formatHistoryDate(dated[0].date) : "Start", px, cy + ch - 2.5);
+        pdf.text(dated.length ? formatHistoryDate(dated[dated.length - 1].date) : "Latest", px + pw, cy + ch - 2.5, { align: "right" });
+    })();
+
+    /* ---------- trade table ---------- */
+
+    const cols = [
+        { h: "DATE", w: 28, a: "l" }, { h: "PAIR", w: 26, a: "l" }, { h: "DIRECTION", w: 24, a: "l" },
+        { h: "SESSION", w: 28, a: "l" }, { h: "ENTRY", w: 30, a: "r" }, { h: "EXIT", w: 30, a: "r" },
+        { h: "LOT", w: 20, a: "r" }, { h: "R:R", w: 22, a: "r" }, { h: "RESULT", w: 28, a: "c" }, { h: "P&L", w: 41, a: "r" }
+    ];
+    const RH = 7.2, BOTTOM = 193;
+
+    function place(text, x, w, a, y) {
+        if (a === "r") pdf.text(text, x + w - 3, y, { align: "right" });
+        else if (a === "c") pdf.text(text, x + w / 2, y, { align: "center" });
+        else pdf.text(text, x + 3, y);
+    }
+
+    function tableHeader(y) {
+        fill(COL.head); pdf.rect(M, y, W - M * 2, 8, "F");
+        pdf.setFont("helvetica", "bold"); pdf.setFontSize(7); ink([255, 255, 255]);
+        let x = M; cols.forEach(c => { place(c.h, x, c.w, c.a, y + 5.3); x += c.w; });
+        fill(COL.green); pdf.rect(M, y + 8, W - M * 2, 0.7, "F");
+        return y + 8.7;
+    }
+
+    let y = tableHeader(108);
+
+    asc.slice().reverse().forEach((t, idx) => {
+
+        if (y + RH > BOTTOM) { pdf.addPage(); slimHeader(); y = tableHeader(15); }
+
+        const p = pnlOf(t);
+
+        fill(p > 0 ? COL.gRow : p < 0 ? COL.rRow : (idx % 2 ? COL.zebra : [255, 255, 255]));
+        pdf.rect(M, y, W - M * 2, RH, "F");
+        fill(p > 0 ? COL.gSolid : p < 0 ? COL.rSolid : COL.nSolid);
+        pdf.rect(M, y, 1.4, RH, "F");
+
+        const dir = String(t.direction || "-").toUpperCase();
+        const res = p > 0 ? "WIN" : p < 0 ? "LOSS" : "BREAKEVEN";
+
+        const cells = [
+            formatHistoryDate(t.date), clip(t.pair || "-", 12), dir, clip(t.session || "-", 12),
+            fmt2(t.entry), fmt2(t.exit), fmt2(t.lot), fmt2(t.rr), "", signed(p)
+        ];
+
+        let x = M; const ty = y + 4.9;
+        cells.forEach((v, i) => {
+            const c = cols[i];
+            pdf.setFont("helvetica", i === 1 || i === 9 ? "bold" : "normal"); pdf.setFontSize(i === 9 ? 8.5 : 8);
+            ink(i === 2 ? COL.muted : i === 9 ? (p > 0 ? COL.gSolid : p < 0 ? COL.rSolid : COL.muted) : COL.text);
+
+            if (i === 8) {
+                const solid = p > 0 ? COL.gSolid : p < 0 ? COL.rSolid : COL.nSolid, pw2 = res === "BREAKEVEN" ? 22 : 15;
+                fill(solid); pdf.roundedRect(x + c.w / 2 - pw2 / 2, y + 1.4, pw2, 4.4, 2.2, 2.2, "F");
+                pdf.setFont("helvetica", "bold"); pdf.setFontSize(6.5); ink([255, 255, 255]);
+                pdf.text(res, x + c.w / 2, y + 4.5, { align: "center" });
+            } else if (i === 2 && (dir === "BUY" || dir === "SELL")) {
+                fill(dir === "BUY" ? COL.gSolid : COL.rSolid); pdf.roundedRect(x + 3, y + 1.4, 11, 4.4, 2.2, 2.2, "F");
+                pdf.setFont("helvetica", "bold"); pdf.setFontSize(6.5); ink([255, 255, 255]);
+                pdf.text(dir, x + 8.5, y + 4.5, { align: "center" });
+            } else place(v, x, c.w, c.a, ty);
+            x += c.w;
+        });
+
+        stroke(COL.line); pdf.setLineWidth(0.15); pdf.line(M, y + RH, W - M, y + RH);
+        y += RH;
+    });
+
+    /* ---------- footer on every page ---------- */
+
+    const pages = pdf.internal.getNumberOfPages();
+    for (let pg = 1; pg <= pages; pg++) {
+        pdf.setPage(pg);
+        stroke(COL.line); pdf.setLineWidth(0.3); pdf.line(M, H - 11, W - M, H - 11);
+        pdf.setFont("helvetica", "normal"); pdf.setFontSize(7.5); ink(COL.muted);
+        pdf.text("FX Manager  |  Trade History Report", M, H - 6.5);
+        pdf.text("Page " + pg + " of " + pages, W - M, H - 6.5, { align: "right" });
+    }
+
+    const today = new Date().toISOString().split("T")[0];
+    pdf.save("FX-Manager-Trade-History-" + today + ".pdf");
+
+    } catch (error) {
+        console.error("PDF export failed:", error);
+        alert("Could not create the PDF. Please try again.");
+    }
+}
+
+/* =========================================
+   INITIALIZE
+========================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        renderHistoryTrades();
+
+    }
+);
+
+</script>
+
+
+
+<!-- =========================================
+     HISTORY PAGE STYLES
+========================================= -->
+
+<style>
+
+.history-win,
+.history-loss,
+.history-breakeven {
+
+    display: inline-block;
+
+    padding: 4px 8px;
+
+    border-radius: 6px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+}
+
+
+.history-win {
+
+    background: rgba(25, 217, 155, 0.12);
+
+    color: #19d99b;
+
+}
+
+
+.history-loss {
+
+    background: rgba(255, 80, 80, 0.12);
+
+    color: #ff7070;
+
+}
+
+
+.history-breakeven {
+
+    background: rgba(255, 193, 7, 0.12);
+
+    color: #ffc107;
+
+}
+
+
+.history-profit {
+
+    color: #19d99b;
+
+}
+
+
+.history-neutral {
+
+    color: inherit;
+
+}
+
+
+#historySearch::placeholder {
+
+    color: rgba(255,255,255,0.45);
+
+}
+
+
+@media (max-width: 700px) {
+
+    #historySearch {
+
+        width: 100% !important;
+
+    }
+
+}
+
+</style>
+
+
+<script src="./sidebar.js"></script>
+
+</body>
+
+</html>
